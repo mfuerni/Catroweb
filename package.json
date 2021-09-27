@@ -48,7 +48,7 @@
     "@material/icon-button": "^7.0.0",
     "@material/menu-surface": "^7.0.0",
     "@material/progress-indicator": "^7.0.0",
-    "@material/snackbar": "^7.0.0",
+    "@material/snackbar": "^13.0.0",
     "@material/top-app-bar": "^7.0.0",
     "ajv": "^6.12.3",
     "animate.css": "^4.1.0",
