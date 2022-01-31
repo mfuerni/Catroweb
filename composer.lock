@@ -129,12 +129,12 @@
             "version": "v1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/clue/php-stream-filter.git",
+                "url": "https://github.com/clue/stream-filter.git",
                 "reference": "5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clue/php-stream-filter/zipball/5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
+                "url": "https://api.github.com/repos/clue/stream-filter/zipball/5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
                 "reference": "5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
                 "shasum": ""
             },
@@ -173,6 +173,16 @@
                 "stream",
                 "stream_filter_append",
                 "stream_filter_register"
+            ],
+            "funding": [
+                {
+                    "url": "https://clue.engineering/support",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
             ],
             "time": "2019-04-09T12:31:48+00:00"
         },
@@ -1573,6 +1583,7 @@
                 "reflection",
                 "static"
             ],
+            "abandoned": "roave/better-reflection",
             "time": "2020-03-27T11:06:43+00:00"
         },
         {
@@ -3466,7 +3477,8 @@
                 "themes",
                 "theming"
             ],
-            "time": "2019-06-19T12:53:08+00:00"
+            "abandoned": "sylius/theme-bundle",
+            "time": "2020-11-23T14:25:37+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -5274,6 +5286,7 @@
                 "datagrid",
                 "sonata"
             ],
+            "abandoned": true,
             "time": "2019-03-05T16:37:15+00:00"
         },
         {
@@ -5490,6 +5503,7 @@
                 "Easy Extends",
                 "sonata"
             ],
+            "abandoned": true,
             "time": "2018-02-11T12:21:41+00:00"
         },
         {
@@ -5716,6 +5730,7 @@
                 "mail",
                 "mailer"
             ],
+            "abandoned": "symfony/mailer",
             "time": "2019-11-12T09:31:26+00:00"
         },
         {
@@ -7565,6 +7580,7 @@
                     "type": "tidelift"
                 }
             ],
+            "abandoned": "EnglishInflector from the String component",
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -7950,20 +7966,23 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.17.1",
+            "version": "v1.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "2edd75b8b35d62fd3eeabba73b26b8f1f60ce13d"
+                "reference": "30885182c981ab175d4d034db0f6f469898070ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/2edd75b8b35d62fd3eeabba73b26b8f1f60ce13d",
-                "reference": "2edd75b8b35d62fd3eeabba73b26b8f1f60ce13d",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/30885182c981ab175d4d034db0f6f469898070ab",
+                "reference": "30885182c981ab175d4d034db0f6f469898070ab",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-ctype": "*"
             },
             "suggest": {
                 "ext-ctype": "For best performance"
@@ -7971,7 +7990,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.17-dev"
+                    "dev-main": "1.23-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -8022,7 +8041,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-06T08:46:27+00:00"
+            "time": "2021-10-20T20:35:02+00:00"
         },
         {
             "name": "symfony/polyfill-iconv",
@@ -8418,20 +8437,23 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.17.1",
+            "version": "v1.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "7110338d81ce1cbc3e273136e4574663627037a7"
+                "reference": "0abb51d2f102e00a4eefcf46ba7fec406d245825"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7110338d81ce1cbc3e273136e4574663627037a7",
-                "reference": "7110338d81ce1cbc3e273136e4574663627037a7",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/0abb51d2f102e00a4eefcf46ba7fec406d245825",
+                "reference": "0abb51d2f102e00a4eefcf46ba7fec406d245825",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-mbstring": "*"
             },
             "suggest": {
                 "ext-mbstring": "For best performance"
@@ -8439,7 +8461,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.17-dev"
+                    "dev-main": "1.23-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -8491,7 +8513,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-06T08:46:27+00:00"
+            "time": "2021-11-30T18:21:41+00:00"
         },
         {
             "name": "symfony/polyfill-php56",
@@ -8714,25 +8736,25 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.17.1",
+            "version": "v1.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "4a5b6bba3259902e386eb80dd1956181ee90b5b2"
+                "reference": "57b712b08eddb97c762a8caa32c84e037892d2e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/4a5b6bba3259902e386eb80dd1956181ee90b5b2",
-                "reference": "4a5b6bba3259902e386eb80dd1956181ee90b5b2",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/57b712b08eddb97c762a8caa32c84e037892d2e9",
+                "reference": "57b712b08eddb97c762a8caa32c84e037892d2e9",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.0.8"
+                "php": ">=7.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.17-dev"
+                    "dev-main": "1.23-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -8790,7 +8812,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-06T08:46:27+00:00"
+            "time": "2021-09-13T13:58:33+00:00"
         },
         {
             "name": "symfony/polyfill-util",
@@ -10878,6 +10900,7 @@
                 "i18n",
                 "text"
             ],
+            "abandoned": true,
             "time": "2018-12-05T18:34:18+00:00"
         },
         {
@@ -11873,6 +11896,7 @@
                 "phar",
                 "update"
             ],
+            "abandoned": true,
             "time": "2019-12-12T13:45:57+00:00"
         },
         {
@@ -12195,12 +12219,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dutchiexl/BehatHtmlFormatterPlugin.git",
-                "reference": "c042ff828f79388ff0b36dc11138d9db16a6bc92"
+                "reference": "ecc2d56d9e9dfd3af4fbf469ed2d0c3499f8d650"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dutchiexl/BehatHtmlFormatterPlugin/zipball/c042ff828f79388ff0b36dc11138d9db16a6bc92",
-                "reference": "c042ff828f79388ff0b36dc11138d9db16a6bc92",
+                "url": "https://api.github.com/repos/dutchiexl/BehatHtmlFormatterPlugin/zipball/ecc2d56d9e9dfd3af4fbf469ed2d0c3499f8d650",
+                "reference": "ecc2d56d9e9dfd3af4fbf469ed2d0c3499f8d650",
                 "shasum": ""
             },
             "require": {
@@ -12225,6 +12249,9 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Neal Vanmeert",
@@ -12232,7 +12259,7 @@
                 }
             ],
             "description": "This will create a html formatter for Behat.",
-            "time": "2019-07-02T15:13:15+00:00"
+            "time": "2021-07-14T13:31:15+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
@@ -13393,6 +13420,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2020-06-27T06:36:25+00:00"
         },
         {
@@ -14281,37 +14309,33 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v5.1.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
-                "reference": "b9adef763c4f98660d1f8b924f6d61718f8ae0bc"
+                "reference": "18e73179c6a33d520de1b644941eba108dd811ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/b9adef763c4f98660d1f8b924f6d61718f8ae0bc",
-                "reference": "b9adef763c4f98660d1f8b924f6d61718f8ae0bc",
+                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/18e73179c6a33d520de1b644941eba108dd811ad",
+                "reference": "18e73179c6a33d520de1b644941eba108dd811ad",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "symfony/dom-crawler": "^4.4|^5.0"
+                "symfony/dom-crawler": "^4.4|^5.0|^6.0",
+                "symfony/polyfill-php80": "^1.16"
             },
             "require-dev": {
-                "symfony/css-selector": "^4.4|^5.0",
-                "symfony/http-client": "^4.4|^5.0",
-                "symfony/mime": "^4.4|^5.0",
-                "symfony/process": "^4.4|^5.0"
+                "symfony/css-selector": "^4.4|^5.0|^6.0",
+                "symfony/http-client": "^4.4|^5.0|^6.0",
+                "symfony/mime": "^4.4|^5.0|^6.0",
+                "symfony/process": "^4.4|^5.0|^6.0"
             },
             "suggest": {
                 "symfony/process": ""
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\BrowserKit\\": ""
@@ -14334,7 +14358,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony BrowserKit Component",
+            "description": "Simulates the behavior of a web browser, allowing you to make requests, click on links and submit forms programmatically",
             "homepage": "https://symfony.com",
             "funding": [
                 {
@@ -14350,7 +14374,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-23T13:13:03+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -14421,40 +14445,36 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v5.1.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "907187782c465a564f9030a0c6ace59e8821106f"
+                "reference": "2634381fdf27a2a0a8ac8eb404025eb656c65d0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/907187782c465a564f9030a0c6ace59e8821106f",
-                "reference": "907187782c465a564f9030a0c6ace59e8821106f",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/2634381fdf27a2a0a8ac8eb404025eb656c65d0c",
+                "reference": "2634381fdf27a2a0a8ac8eb404025eb656c65d0c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
+                "symfony/deprecation-contracts": "^2.1|^3",
                 "symfony/polyfill-ctype": "~1.8",
                 "symfony/polyfill-mbstring": "~1.0",
-                "symfony/polyfill-php80": "^1.15"
+                "symfony/polyfill-php80": "^1.16"
             },
             "conflict": {
                 "masterminds/html5": "<2.6"
             },
             "require-dev": {
                 "masterminds/html5": "^2.6",
-                "symfony/css-selector": "^4.4|^5.0"
+                "symfony/css-selector": "^4.4|^5.0|^6.0"
             },
             "suggest": {
                 "symfony/css-selector": ""
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\DomCrawler\\": ""
@@ -14477,7 +14497,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony DomCrawler Component",
+            "description": "Eases DOM navigation for HTML and XML documents",
             "homepage": "https://symfony.com",
             "funding": [
                 {
@@ -14493,7 +14513,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-23T13:08:13+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/maker-bundle",
@@ -14998,13 +15018,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/wapmorgan/PhpCodeFixer.git",
-                "reference": "8b4ea516a1e5f163cbd9e3426bbe3a23532997d2"
+                "url": "https://github.com/wapmorgan/PhpDeprecationDetector.git",
+                "reference": "7120d33f0ffe7a4bb140aaf454b6b4b9c1dddc98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/PhpCodeFixer/zipball/8b4ea516a1e5f163cbd9e3426bbe3a23532997d2",
-                "reference": "8b4ea516a1e5f163cbd9e3426bbe3a23532997d2",
+                "url": "https://api.github.com/repos/wapmorgan/PhpDeprecationDetector/zipball/7120d33f0ffe7a4bb140aaf454b6b4b9c1dddc98",
+                "reference": "7120d33f0ffe7a4bb140aaf454b6b4b9c1dddc98",
                 "shasum": ""
             },
             "require": {
@@ -15013,26 +15033,29 @@
                 "php": ">=5.4",
                 "symfony/console": "^3.4|^4.0|^5.0"
             },
+            "replace": {
+                "wapmorgan/php-code-fixer": "self.version"
+            },
             "suggest": {
                 "ext-json": "Adds ability to store report in JSON format"
             },
             "bin": [
-                "bin/phpcf"
+                "bin/phpdd"
             ],
             "type": "package",
             "extra": {
                 "phar-builder": {
                     "compression": "BZip2",
-                    "name": "phpcf-dev.phar",
+                    "name": "phpdd-dev.phar",
                     "output-dir": "./",
-                    "entry-point": "bin/phpcf",
+                    "entry-point": "bin/phpdd",
                     "include": [
                         "bin",
                         "data"
                     ],
                     "events": {
                         "command.package.start": "git describe --tags > bin/version.txt",
-                        "command.package.end": "cp phpcf-dev.phar phpcf-`cat bin/version.txt`.phar && chmod +x phpcf.phar && rm bin/version.txt"
+                        "command.package.end": "cp phpdd-dev.phar phpdd-`cat bin/version.txt`.phar && chmod +x phpdd-`cat bin/version.txt`.phar && rm bin/version.txt"
                     }
                 }
             },
@@ -15049,19 +15072,20 @@
                 "BSD-3-Clause"
             ],
             "description": "Analyzer of PHP code to search issues with deprecated functionality in newer interpreter versions.",
-            "time": "2020-06-13T18:33:47+00:00"
+            "abandoned": "wapmorgan/php-deprecation-detector",
+            "time": "2022-01-01T13:56:54+00:00"
         },
         {
             "name": "webmozart/assert",
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },
