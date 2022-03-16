@@ -269,6 +269,8 @@ passwordRecovery:
     Your Catrobat Team.
     </p>
 profile:
+  aboutMe: About me
+  currentlyWorkingOn: Currently working on
   edit: Edit your profile
   saveChanges: save changes
   newPass: new password
@@ -297,6 +299,7 @@ profile:
     submitSuccess: saved!
   reallyDeleteProgram: Do you really want to delete your project
   programsOf: Projects of
+  picture: Profile picture
   changePicture: Change picture
   avatar:
     noImage: No image!
@@ -306,6 +309,11 @@ profile:
   goToScratchProfile: Profile on Scratch
 
 myprofile:
+  userSettings: User Settings
+  profileSettings: Profile Settings
+  securitySettings: Security Settings
+  accountSettings: Account Settings
+  account: Account
   editProfile: Edit profile
   edit: Edit
   done: Done

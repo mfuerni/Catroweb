@@ -29,6 +29,9 @@
 /* global deleteConfirmationMessage */
 
 import $ from 'jquery'
+import './components/fullscreen_list_modal'
+import './components/text_field'
+import './components/tab_bar'
 import { MyProfile } from './custom/MyProfile'
 import { ProjectLoader } from './custom/ProjectLoader'
 import { setImageUploadListener } from './custom/ImageUpload'
