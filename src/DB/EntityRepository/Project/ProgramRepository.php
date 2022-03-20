@@ -89,8 +89,7 @@ class ProgramRepository extends ServiceEntityRepository
     $qb = $this->setPagination($qb, $limit, $offset);
     $qb = $this->setOrderBy($qb, 'uploaded_at');
     $qb
-      ->leftJoin('e.user', 'f')
-      ->andWhere($qb->expr()->eq('f.id', ':user_id'))
+      ->andWhere($qb->expr()->eq('e.user', ':user_id'))
       ->setParameter('user_id', $user_id)
     ;
 
@@ -102,8 +101,7 @@ class ProgramRepository extends ServiceEntityRepository
     $qb = $this->createQueryCountBuilder();
     $qb = $this->excludeUnavailableAndPrivateProjects($qb, $flavor, $max_version);
     $qb
-      ->leftJoin('e.user', 'f')
-      ->andWhere($qb->expr()->eq('f.id', ':user_id'))
+      ->andWhere($qb->expr()->eq('e.user', ':user_id'))
       ->setParameter('user_id', $user_id)
     ;
 
@@ -118,8 +116,7 @@ class ProgramRepository extends ServiceEntityRepository
     $qb = $this->setPagination($qb, $limit, $offset);
     $qb = $this->setOrderBy($qb, 'uploaded_at');
     $qb
-      ->leftJoin('e.user', 'f')
-      ->andWhere($qb->expr()->eq('f.id', ':user_id'))
+      ->andWhere($qb->expr()->eq('e.user', ':user_id'))
       ->setParameter('user_id', $user_id)
     ;
 
@@ -131,8 +128,7 @@ class ProgramRepository extends ServiceEntityRepository
     $qb = $this->createQueryCountBuilder();
     $qb = $this->excludeUnavailableProjects($qb, $flavor, $max_version);
     $qb
-      ->leftJoin('e.user', 'f')
-      ->andWhere($qb->expr()->eq('f.id', ':user_id'))
+      ->andWhere($qb->expr()->eq('e.user', ':user_id'))
       ->setParameter('user_id', $user_id)
     ;
 
@@ -202,8 +198,7 @@ class ProgramRepository extends ServiceEntityRepository
     $qb = $this->setPagination($qb, $limit, $offset);
     $qb = $this->setOrderBy($qb, 'uploaded_at');
     $qb
-      ->leftJoin('e.user', 'f')
-      ->andWhere($qb->expr()->eq('f.id', ':user_id'))
+      ->andWhere($qb->expr()->eq('e.user', ':user_id'))
       ->setParameter('user_id', $user_id)
       ->andWhere($qb->expr()->neq('e.id', ':project_id'))
       ->setParameter('project_id', $project_id)

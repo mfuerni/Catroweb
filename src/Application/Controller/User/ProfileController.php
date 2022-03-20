@@ -53,7 +53,7 @@ class ProfileController extends AbstractController
       if (is_null($user)) {
         return $this->redirectToRoute('login');
       }
-      $program_count = $this->program_manager->countUserProjects($id);
+      $program_count = $this->program_manager->countUserProjects($user->getId());
       $view = 'UserManagement/Profile/myProfile.html.twig';
     } else {
       $user = $this->user_manager->find($id);

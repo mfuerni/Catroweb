@@ -110,12 +110,15 @@ programs:
   recommended: Recommended projects
   scratchremixes: Scratch remixes
   noPrograms: There are currently no projects.
+  deleteAction: Delete project
   deleteConfirmation: |+
     Are you sure?
     Are you sure you want to delete "%programName%"?
     There is no way to restore your actions!
     Yes, delete it!
     Cancel
+  setPrivateAction: Set private
+  setPublicAction: Set public
   changeVisibility: |+
     Are you sure?
     If you set '%programName%' to private, it will not be seen or found by other users.
