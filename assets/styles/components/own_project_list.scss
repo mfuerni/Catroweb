@@ -88,6 +88,7 @@ $container-padding: 1rem;
         grid-template-areas:
     ". ."
     ". .";
+        padding-bottom: 0.4rem;
 
         &__property {
           display: inline-flex;
@@ -97,6 +98,24 @@ $container-padding: 1rem;
           &__value {
             padding-left: 0.25rem;
           }
+        }
+      }
+
+      &__visibility {
+        color: $text-muted;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        display: flex;
+        flex-direction: row;
+
+        &__icon {
+          font-size: 1.5em;
+        }
+
+        &__text {
+          margin-top: 1px;
+          margin-left: 2px;
+          letter-spacing: 0.5px;
         }
       }
     }

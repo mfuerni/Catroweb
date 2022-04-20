@@ -117,6 +117,8 @@ programs:
     There is no way to restore your actions!
     Yes, delete it!
     Cancel
+  private: private
+  public: public
   setPrivateAction: Set private
   setPublicAction: Set public
   changeVisibility: |+

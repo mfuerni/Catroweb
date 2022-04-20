@@ -81,14 +81,11 @@ $(() => {
   const projectsContainer = document.getElementById('own-projects')
   const theme = projectsContainer.dataset.theme
   const baseUrl = projectsContainer.dataset.baseUrl
-  const userId = projectsContainer.dataset.userId
   const emptyMessage = projectsContainer.dataset.emptyMessage
 
-  const url = baseUrl + '/api/projects/user/' + userId
-  // const url = baseUrl + '/api/projects/user'
-  // TODO: switch to API endpoint without ID, but how to handle JWT authentication?
+  const url = baseUrl + '/api/projects/user'
 
-  new OwnProjectList(projectsContainer, url, theme, emptyMessage, myProfileConfiguration.projectActions).initialize()
+  new OwnProjectList(projectsContainer, url, theme, emptyMessage, myProfileConfiguration.projectActions, myProfileConfiguration.projectInfo).initialize()
 
   initProfilePictureChange()
   initSaveProfileSettings()
@@ -99,25 +96,38 @@ $(() => {
   programs.initProfile(userID)
 })
 
+const showErrorMessage = function (message) {
+  Swal.fire({
+    title: myProfileConfiguration.errorMessages.title,
+    text: message,
+    icon: 'error',
+    confirmButtonText: myProfileConfiguration.errorMessages.okayButtonText
+  })
+}
+
 const initProfilePictureChange = function () {
   Array.prototype.forEach.call(document.getElementsByClassName('profile__basic-info__avatar'), function (el) {
     el.addEventListener('click', function () {
       const input = document.createElement('input')
       input.type = 'file'
       input.onchange = event => {
+        // TODO: show loading spinner
         console.debug('new file', event, input.files)
 
         const reader = new window.FileReader()
 
         reader.onerror = () => {
           // TODO: hide spinner
-          // TODO: show upload error message
+          showErrorMessage(myProfileConfiguration.errorMessages.avatar.uploadError)
         }
         reader.onload = event => {
           const image = event.currentTarget.result // base64 data url
           console.debug('Loading image', image
           )
           // TODO: API call and error handling
+
+          // on success:
+          //document.getElementById('alert-img-upload-success').classList.remove('d-none')
         }
         reader.readAsDataURL(input.files[0])
       }
@@ -143,8 +153,7 @@ const initSaveSecuritySettings = function () {
     if (form.reportValidity() === true) {
       const formData = new window.FormData(form)
       if (formData.get('_password') !== formData.get('_repeat-password')) {
-        // TODO: show beautiful error
-        alert('Passwords do not match!')
+        showErrorMessage(myProfileConfiguration.errorMessages.security.passwordsDontMatch)
       } else {
         console.debug('Save security settings', Array.from(formData))
         // TODO: API call and error handling

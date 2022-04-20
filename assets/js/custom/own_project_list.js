@@ -2,11 +2,12 @@ import $ from 'jquery'
 import { Corner, MDCMenu } from '@material/menu'
 import { MDCMenuSurfaceFoundation } from '@material/menu-surface'
 import Swal from 'sweetalert2'
+import { getCookie } from '../security/CookieHelper'
 
 require('../../styles/components/own_project_list.scss')
 
 export class OwnProjectList {
-  constructor (container, apiUrl, theme, emptyMessage = '', actionConfiguration) {
+  constructor (container, apiUrl, theme, emptyMessage = '', actionConfiguration, projectInfoConfiguration) {
     this.container = container
     this.projectsContainer = container.getElementsByClassName('projects-container')[0]
     this.apiUrl = apiUrl
@@ -19,6 +20,7 @@ export class OwnProjectList {
     this.emptyMessage = emptyMessage
     this.projectActionMenu = undefined
     this.actionConfiguration = actionConfiguration
+    this.projectInfoConfiguration = projectInfoConfiguration
   }
 
   initialize () {
@@ -56,8 +58,14 @@ export class OwnProjectList {
       this.apiUrl += '&'
     }
 
-    $.getJSON(this.apiUrl + 'limit=' + this.projectFetchCount + '&offset=' + this.projectsLoaded,
-      function (data) {
+    $.ajax({
+      url: this.apiUrl + 'limit=' + this.projectFetchCount + '&offset=' + this.projectsLoaded +
+        '&attributes=id,project_url,screenshot_small,screenshot_large,name,downloads,views,reactions,comments,private',
+      dataType: 'json',
+      headers: {
+        Authorization: 'Bearer ' + getCookie('BEARER')
+      },
+      success: function (data) {
         if (!Array.isArray(data)) {
           console.error('Data received for own projects is no array!')
           self.container.classList.remove('loading')
@@ -93,7 +101,8 @@ export class OwnProjectList {
         }
 
         self.fetchActive = false
-      }).fail(function (jqXHR, textStatus, errorThrown) {
+      }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
       console.error('Failed loading own projects', JSON.stringify(jqXHR), textStatus, errorThrown)
       self.container.classList.remove('loading')
     })
@@ -137,14 +146,14 @@ export class OwnProjectList {
     details.appendChild(properties)
 
     const icons = {
+      downloads: 'get_app',
       views: 'visibility',
-      download: 'get_app',
       reactions: 'thumb_up',
-      author: 'person'
+      comments: 'chat'
     }
 
     // eslint-disable-next-line no-array-constructor
-    Array('download', 'views', 'reactions', 'comments').forEach(function (propertyKey) {
+    Array('downloads', 'views', 'reactions', 'comments').forEach(function (propertyKey) {
       if (Object.prototype.hasOwnProperty.call(data, propertyKey)) {
         const propEl = document.createElement('div')
         propEl.className = 'own-project-list__project__details__properties__property'
@@ -162,6 +171,20 @@ export class OwnProjectList {
         properties.appendChild(propEl)
       }
     })
+
+    const visibility = document.createElement('div')
+    visibility.className = 'own-project-list__project__details__visibility'
+    details.appendChild(visibility)
+
+    const visibilityIcon = document.createElement('span')
+    visibilityIcon.className = 'material-icons own-project-list__project__details__visibility__icon'
+    visibilityIcon.appendChild(document.createTextNode(data.private ? 'lock' : 'lock_open'))
+    visibility.appendChild(visibilityIcon)
+
+    const visibilityText = document.createElement('span')
+    visibilityText.className = 'own-project-list__project__details__visibility__text'
+    visibilityText.appendChild(document.createTextNode(data.private ? this.projectInfoConfiguration.visibilityPrivateText : this.projectInfoConfiguration.visibilityPublicText))
+    visibility.appendChild(visibilityText)
 
     const action = document.createElement('div')
     action.className = 'own-project-list__project__action'
@@ -217,12 +240,23 @@ export class OwnProjectList {
       cancelButtonText: msgParts[4]
     }).then((result) => {
       if (result.value) {
-        window.location.href = this.actionConfiguration.delete.url + '/' + id
+        window.fetch('/api/project/' + id, {
+          method: 'DELETE',
+          headers: new window.Headers({
+            Authorization: 'Bearer ' + getCookie('BEARER')
+          })
+        }).then(() => {
+          window.location.reload()
+        }).catch((error) => {
+          // TODO: show error to user
+          console.error(error)
+        })
       }
     })
   }
 
   _actionToggleVisibility (id) {
+    const self = this
     const project = this.projectsData[id]
     const configuration = this.actionConfiguration.visibility
     const msgParts = configuration.confirmationText
@@ -244,12 +278,15 @@ export class OwnProjectList {
       if (result.value) {
         $.get(configuration.url + '/' + id, {}, function (data) {
           if (data === 'true') {
+            const visibilityElem = document.querySelector('.own-project-list__project[data-id="' + id + '"] .own-project-list__project__details__visibility')
             if (project.private) {
               project.private = false
-              // TODO: change visibility lock icon
+              visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock_open'
+              visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPublicText
             } else {
               project.private = true
-              // TODO: change visibility lock icon
+              visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock'
+              visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPrivateText
             }
           } else {
             Swal.fire({

@@ -45,62 +45,74 @@ final class ProjectsResponseManager extends AbstractResponseManager
 
   /**
    * @param mixed $program
+   * @param ?string $attributes Comma-separated list of attributes to include into response
    *
    * @throws Exception
    */
-  public function createProjectDataResponse($program): ProjectResponse
+  public function createProjectDataResponse($program, ?string $attributes): ProjectResponse
   {
+    if(empty($attributes)) {
+      $attributes = 'id,name,author,views,downloads,flavor,uploaded_string,screenshot_large,screenshot_small,project_url';
+    }
+
     /** @var Program $project */
     $project = $program->isExample() ? $program->getProgram() : $program;
 
-    $tags = [];
-    $project_tags = $project->getTags();
-    /** @var Tag $tag */
-    foreach ($project_tags as $tag) {
-      $tags[$tag->getId()] = $tag->getInternalTitle();
-    }
+    $attributes_list = explode(',', $attributes);
+    $data = [];
 
-    return new ProjectResponse([
-      'id' => $project->getId(),
-      'name' => $project->getName(),
-      'author' => $project->getUser()->getUserIdentifier(),
-      'description' => $project->getDescription(),
-      'version' => $project->getCatrobatVersionName(),
-      'views' => $project->getViews(),
-      'download' => $project->getDownloads(),
-      'private' => $project->getPrivate(),
-      'flavor' => $project->getFlavor(),
-      'tags' => $tags,
-      'uploaded' => $project->getUploadedAt()->getTimestamp(),
-      'uploaded_string' => $this->time_formatter->getElapsedTime($project->getUploadedAt()->getTimestamp()),
-      'screenshot_large' => $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotLarge($project->getId()),
-      'screenshot_small' => $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotSmall($project->getId()),
-      'project_url' => ltrim($this->url_generator->generate(
+    if (in_array('id', $attributes_list)) $data['id'] = $project->getId();
+    if (in_array('name', $attributes_list)) $data['name'] = $project->getName();
+    if (in_array('author', $attributes_list)) $data['author'] = $project->getUser()->getUserIdentifier();
+    if (in_array('description', $attributes_list)) $data['description'] = $project->getDescription();
+    if (in_array('version', $attributes_list)) $data['version'] = $project->getCatrobatVersionName();
+    if (in_array('views', $attributes_list)) $data['views'] = $project->getViews();
+    if (in_array('downloads', $attributes_list)) $data['downloads'] = $project->getDownloads();
+    if (in_array('reactions', $attributes_list)) $data['reactions'] = count($project->getLikes());
+    if (in_array('comments', $attributes_list)) $data['comments'] = count($project->getComments());
+    if (in_array('private', $attributes_list)) $data['private'] = $project->getPrivate();
+    if (in_array('flavor', $attributes_list)) $data['flavor'] = $project->getFlavor();
+    if (in_array('tags', $attributes_list)) {
+      $tags = [];
+      $project_tags = $project->getTags();
+      /** @var Tag $tag */
+      foreach ($project_tags as $tag) {
+        $tags[$tag->getId()] = $tag->getInternalTitle();
+      }
+      $data['tags'] = $tags;
+    }
+    if (in_array('uploaded', $attributes_list)) $data['uploaded'] = $project->getUploadedAt()->getTimestamp();
+    if (in_array('uploaded_string', $attributes_list)) $data['uploaded_string'] = $this->time_formatter->getElapsedTime($project->getUploadedAt()->getTimestamp());
+    if (in_array('screenshot_large', $attributes_list)) $data['screenshot_large'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotLarge($project->getId());
+    if (in_array('screenshot_small', $attributes_list)) $data['screenshot_small'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotSmall($project->getId());
+    if (in_array('project_url', $attributes_list)) $data['project_url'] = ltrim($this->url_generator->generate(
         'program',
         [
-          'theme' => $this->parameter_bag->get('umbrellaTheme'),
-          'id' => $project->getId(),
+            'theme' => $this->parameter_bag->get('umbrellaTheme'),
+            'id' => $project->getId(),
         ],
         UrlGeneratorInterface::ABSOLUTE_URL), '/'
-      ),
-      'download_url' => ltrim($this->url_generator->generate(
+    );
+    if (in_array('download_url', $attributes_list)) $data['download_url'] = ltrim($this->url_generator->generate(
         'open_api_server_projects_projectidcatrobatget',
         [
-          'id' => $project->getId(),
+            'id' => $project->getId(),
         ],
-        UrlGeneratorInterface::ABSOLUTE_URL), '/'),
-      'filesize' => ($project->getFilesize() / 1_048_576),
-    ]);
+        UrlGeneratorInterface::ABSOLUTE_URL), '/');
+    if (in_array('filesize', $attributes_list)) $data['filesize'] = ($project->getFilesize() / 1_048_576);
+
+
+    return new ProjectResponse($data);
   }
 
   /**
    * @throws Exception
    */
-  public function createProjectsDataResponse(array $projects): array
+  public function createProjectsDataResponse(array $projects, ?string $attributes = null): array
   {
     $response = [];
     foreach ($projects as $project) {
-      $response[] = $this->createProjectDataResponse($project);
+      $response[] = $this->createProjectDataResponse($project, $attributes);
     }
 
     return $response;

@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block body %}
+  <div id="alert-img-upload-success" class="alert alert-success d-none">
+    {{ 'success.imgUpload'|trans({}, 'catroweb') }}
+  </div>
   <div class="profile__basic-info">
     <div class="profile__basic-info__avatar">
       <img class="profile__basic-info__avatar__img" alt="{{ 'profile.picture' | trans({}, 'catroweb') }}"
@@ -90,7 +93,6 @@
       <div id="own-projects"
            data-theme="{{ theme() }}"
            data-base-url="{{ app.request.getBaseURL() }}"
-           data-user-id="{{ profile.id }}"
            data-flavor="{{ flavor() }}"
            data-empty-message="{{ "programs.noPrograms"|trans({}, 'catroweb') }}"
            class="project-list loading">
@@ -174,10 +176,13 @@
   </script>
 <script>
   const myProfileConfiguration = {
-    projectActions:{
+    projectInfo: {
+      visibilityPrivateText: '{{ "programs.private"|trans({}, "catroweb")}}',
+      visibilityPublicText: '{{ "programs.public"|trans({}, "catroweb")}}',
+    },
+    projectActions: {
       delete: {
-        confirmationText: `{{ "programs.deleteConfirmation"|trans({}, "catroweb") }}`,
-        url: '{{ path('profile_delete_program') }}'
+        confirmationText: `{{ "programs.deleteConfirmation"|trans({}, "catroweb") }}`
       },
       visibility: {
         confirmationText: `{{ "programs.changeVisibility"|trans({}, "catroweb") }}`,
@@ -186,10 +191,25 @@
         errorMessage: '{{ "myprofile.notChangeVisibilityReason"|trans({}, "catroweb") }}'
       }
     },
+    securitySettings: {
+
+    },
     userSettings: {
       deleteAccount: {
         confirmationText: `{{ "programs.deleteAccountConfirmation"|trans({}, "catroweb") }}`,
         url: '{{ path('profile_delete_account') }}'
+      }
+    },
+    errorMessages: {
+      title: '{{ 'error'|trans({}, 'catroweb') }}',
+      okayButtonText: '{{ 'ok'|trans({}, 'catroweb') }}',
+      security: {
+        passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb') }}'
+      },
+      avatar: {
+        tooLarge: '{{ 'profile.avatar.pictureTooLarge'|trans({}, 'catroweb') }}',
+        uploadError: '{{ 'profile.avatar.uploadError'|trans({}, 'catroweb') }}',
+        noSupport: '{{ 'profile.avatar.noSupport'|trans({}, 'catroweb') }}'
       }
     },
     statusCodes: {
