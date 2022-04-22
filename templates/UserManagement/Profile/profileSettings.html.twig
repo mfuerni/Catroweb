@@ -27,7 +27,7 @@
         'id': 'username',
         'label': '' ~ 'username'|trans({}, 'catroweb'),
         'value': username,
-        'name': '_username',
+        'name': 'username',
         'leading_icon': 'person',
         'tabindex': 1
       }
@@ -39,7 +39,7 @@
         'id': 'email',
         'label': '' ~ 'email'|trans({}, 'catroweb'),
         'value': firstMail,
-        'name': '_email',
+        'name': 'email',
         'leading_icon': 'email',
         'tabindex': 2
       }
@@ -50,8 +50,8 @@
       {
         'id': 'status',
         'label': '' ~ 'profile.currentlyWorkingOn'|trans({}, 'catroweb'),
-        'value': 'Status',
-        'name': '_status',
+        'value': app.user.currentlyWorkingOn,
+        'name': 'currentlyWorkingOn',
         'leading_icon': 'schedule',
         'required': false,
         'tabindex': 3
@@ -63,7 +63,7 @@
       {
         'id': 'about',
         'label': '' ~ 'profile.aboutMe'|trans({}, 'catroweb'),
-        'value': 'Hi, my name is Irving and I love developing games with Pocket Code! Check out my newest game: Very cool Game!!',
+        'value': app.user.about,
         'name': 'about',
         'leading_icon': 'description',
         'rows': '4',

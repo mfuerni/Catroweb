@@ -7,6 +7,12 @@
 {% endblock %}
 
 {% block body %}
+  {% set queryParams = app.request.query.all %}
+  {% if queryParams.profileChangeSuccess is defined %}
+    <div id="alert-profile-change-success" class="alert alert-success">
+      {{ 'myprofile.profileChangeSuccess'|trans({}, 'catroweb') }}
+    </div>
+  {% endif %}
   <div id="alert-img-upload-success" class="alert alert-success d-none">
     {{ 'success.imgUpload'|trans({}, 'catroweb') }}
   </div>
@@ -138,7 +144,7 @@
 {% endblock %}
 
 {% block javascript %}
-  <script>
+<script>
     const profileUrl = '{{ path('profile') }}';
     const saveUsername = '{{ path('username_save') }}';
     const saveEmailUrl = '{{ path('email_save') }}';
@@ -203,6 +209,8 @@
     errorMessages: {
       title: '{{ 'error'|trans({}, 'catroweb') }}',
       okayButtonText: '{{ 'ok'|trans({}, 'catroweb') }}',
+      unspecifiedErrorText: '{{ 'myprofile.unspecifiedError'|trans({}, 'catroweb')}}',
+      authentication: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim}}',
       security: {
         passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb') }}'
       },

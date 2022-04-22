@@ -336,6 +336,8 @@ myprofile:
   editAccountSettings: Edit account settings
   notChangeVisibility: Can not change visibility
   notChangeVisibilityReason: The language version of your project is too high and thus it can not be set to visible.
+  profileChangeSuccess: Your profile has been successfully changed.
+  unspecifiedError: An unspecified error occurred while changing your profile. Please contact us.
 
 
 licenseToPlay:

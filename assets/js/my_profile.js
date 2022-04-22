@@ -39,7 +39,7 @@ import { setImageUploadListener } from './custom/ImageUpload'
 import { PasswordVisibilityToggle } from './components/password_visibility_toggle'
 import { OwnProjectList } from './custom/own_project_list'
 import Swal from 'sweetalert2'
-import { deleteCookie } from './security/CookieHelper'
+import { deleteCookie, getCookie } from './security/CookieHelper'
 
 require('../styles/custom/profile.scss')
 
@@ -47,6 +47,10 @@ require('../styles/custom/profile.scss')
 new PasswordVisibilityToggle()
 
 $(() => {
+  if (window.location.search.includes('ChangeSuccess')) {
+    window.history.replaceState(undefined, document.title, window.location.origin + window.location.pathname)
+  }
+
   setImageUploadListener(uploadAvatarUrl, '#avatar-upload', '#avatar-img')
 
   MyProfile(
@@ -105,6 +109,19 @@ const showErrorMessage = function (message) {
   })
 }
 
+const showErrorList = function (errors) {
+  if (!Array.isArray(errors)) {
+    errors = Object.values(errors)
+  }
+
+  Swal.fire({
+    title: myProfileConfiguration.errorMessages.title,
+    html: '<ul class="text-start"><li>' + errors.join('</li><li>') + '</li></ul>',
+    icon: 'error',
+    confirmButtonText: myProfileConfiguration.errorMessages.okayButtonText
+  })
+}
+
 const initProfilePictureChange = function () {
   Array.prototype.forEach.call(document.getElementsByClassName('profile__basic-info__avatar'), function (el) {
     el.addEventListener('click', function () {
@@ -141,8 +158,42 @@ const initSaveProfileSettings = function () {
     const form = document.getElementById('profile-settings-form')
     if (form.reportValidity() === true) {
       const formData = new window.FormData(form)
-      console.debug('Save profile settings', Array.from(formData))
-      // TODO: API call and error handling
+      const data = {}
+      formData.forEach((value, key) => (data[key] = value))
+      console.debug('Save profile settings', Array.from(formData), data)
+      window.fetch('/api/user', {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: 'Bearer ' + getCookie('BEARER')
+        },
+        body: JSON.stringify(data)
+      }).then(response => {
+        switch (response.status) {
+          case 204:
+            // success
+            window.location.search = 'profileChangeSuccess'
+            break
+          case 401:
+            // Invalid credentials
+            console.error('Saving Profile ERROR 401: Invalid credentials', response)
+            showErrorMessage(myProfileConfiguration.errorMessages.authentication)
+            break
+          case 422:
+            response.json().then(errors => {
+              console.error('Saving Profile ERROR 422', errors, response)
+              showErrorList(errors)
+            })
+            break
+          default:
+            console.error('Save Profile ERROR', response)
+            showErrorMessage(myProfileConfiguration.errorMessages.unspecifiedErrorText)
+            break
+        }
+      }).catch(reason => {
+        console.error('Save Profile FAILURE', reason)
+        showErrorMessage(myProfileConfiguration.errorMessages.unspecifiedErrorText)
+      })
     }
   })
 }

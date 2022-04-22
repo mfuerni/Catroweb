@@ -15,6 +15,8 @@ final class UserResponseManager extends AbstractResponseManager
     return new BasicUserDataResponse([
       'id' => $user->getId(),
       'username' => $user->getUsername(),
+      'about' => $user->getAbout(),
+      'currentlyWorkingOn' => $user->getCurrentlyWorkingOn(),
       'projects' => $user->getPrograms()->count(),
       'followers' => $user->getFollowers()->count(),
       'following' => $user->getFollowing()->count(),
@@ -26,6 +28,8 @@ final class UserResponseManager extends AbstractResponseManager
     return new ExtendedUserDataResponse([
       'id' => $user->getId(),
       'username' => $user->getUsername(),
+      'about' => $user->getAbout(),
+      'currentlyWorkingOn' => $user->getCurrentlyWorkingOn(),
       'email' => $user->getEmail(),
       'projects' => $user->getPrograms()->count(),
       'followers' => $user->getFollowers()->count(),

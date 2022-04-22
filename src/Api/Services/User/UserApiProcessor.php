@@ -31,6 +31,13 @@ final class UserApiProcessor extends AbstractApiProcessor
     $user->setUploadToken($this->token_generator->generateToken());
     $this->user_manager->updateUser($user);
 
+    if (!empty($request->getAbout())) {
+      $user->setAbout($request->getAbout());
+    }
+    if (!empty($request->getCurrentlyWorkingOn())) {
+      $user->setCurrentlyWorkingOn($request->getCurrentlyWorkingOn());
+    }
+
     return $user;
   }
 
@@ -49,6 +56,12 @@ final class UserApiProcessor extends AbstractApiProcessor
     }
     if (!empty($request->getPassword())) {
       $user->setPassword($request->getPassword());
+    }
+    if (!empty($request->getAbout())) {
+      $user->setAbout($request->getAbout());
+    }
+    if (!empty($request->getCurrentlyWorkingOn())) {
+      $user->setCurrentlyWorkingOn($request->getCurrentlyWorkingOn());
     }
 
     $this->user_manager->updateUser($user, true);
