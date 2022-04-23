@@ -64,9 +64,17 @@ $container-padding: 1rem;
 
     &__image {
       flex: 0 0 6rem;
+      width: 6rem;
       border-radius: 10%;
       aspect-ratio: auto 1 / 1;
       box-shadow: 3px 3px 20px 0 rgba(50 50 50 / 15%);
+
+      @include media-breakpoint-up(sm) {
+        width: 8rem;
+      }
+      @include media-breakpoint-up(xxl) {
+        width: 10rem;
+      }
     }
 
     &__details {

@@ -132,6 +132,12 @@ final class UserApi extends AbstractApiController implements UserApiInterface
       $this->facade->getProcessor()->updateUser(
         $user, $update_user_request
       );
+
+      if (!is_null($update_user_request->getUsername())) {
+        $token = $this->facade->getAuthenticationManager()->createAuthenticationTokenFromUser($user);
+        $refresh_token = $this->facade->getAuthenticationManager()->createRefreshTokenByUser($user);
+        $this->facade->getResponseManager()->addAuthenticationCookiesToHeader($token, $refresh_token, $responseHeaders);
+      }
     }
 
     return null;

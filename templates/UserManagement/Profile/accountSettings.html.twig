@@ -13,13 +13,12 @@
   } %}
 {% block content %}
   <h2>{{ 'myprofile.deleteAccount'|trans({}, 'catroweb') }}</h2>
-  <p><strong>Be aware:</strong>
-    You created 10 projects and have 12 followers.
-    All of your projects will be removed. You won't
-    be able to login anymore and your projects
-    will disappear from all lists.
-    Deleting your profile cannot be undone!</p>
-  <p>Are you sure you want to leave us?</p> {# TODO: Translate text and add variables! #}
-  <button id="btn-delete-account" class="btn btn-danger w-100">{{ "myprofile.deleteAccount"|trans({}, "catroweb") }}
+  {% set text_parts = 'myprofile.deleteAccountWarning'
+    |trans({'%num_projects%': app.user.programs|length, '%num_followers%': app.user.followers|length}, 'catroweb')
+    |split('\n') %}
+  <p><strong>{{ text_parts[0] }}</strong>
+    {{ text_parts[1] }}</p>
+  <p>{{ text_parts[2] }}</p>
+  <button id="btn-delete-account" class="btn btn-danger w-100">{{ 'myprofile.deleteAccount'|trans({}, 'catroweb') }}
   </button>
 {% endblock %}

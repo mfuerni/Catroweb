@@ -24,9 +24,9 @@
     {% include 'components/text_field.html.twig' with {
       'text_field':
       {
-        'id': 'old-password',
+        'id': 'profile-current-password',
         'label': '' ~ 'profile.oldPass'|trans({}, 'catroweb'),
-        'name': '_old-password',
+        'name': 'current-password',
         'trailing_icon': 'visibility',
         'type': 'password',
         'tabindex': 1
@@ -36,9 +36,9 @@
     {% include 'components/text_field.html.twig' with {
       'text_field':
       {
-        'id': 'password',
+        'id': 'profile-password',
         'label': '' ~ 'profile.newPass'|trans({}, 'catroweb'),
-        'name': '_password',
+        'name': 'password',
         'trailing_icon': 'visibility',
         'type': 'password',
         'tabindex': 2
@@ -48,9 +48,9 @@
     {% include 'components/text_field.html.twig' with {
       'text_field':
       {
-        'id': 'repeat-password',
+        'id': 'profile-repeat-password',
         'label': '' ~ 'profile.repeatPass'|trans({}, 'catroweb'),
-        'name': '_repeat-password',
+        'name': 'repeat-password',
         'trailing_icon': 'visibility',
         'type': 'password',
         'tabindex': 3

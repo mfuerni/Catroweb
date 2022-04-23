@@ -117,6 +117,7 @@ programs:
     There is no way to restore your actions!
     Yes, delete it!
     Cancel
+  deleteNotFoundError: The project to be deleted could not be found under your user.
   private: private
   public: public
   setPrivateAction: Set private
@@ -332,7 +333,10 @@ myprofile:
   editCountry: Edit country
   editEmail: Edit email
   deleteAccount: Delete account
-  deleteAccountText: Are you sure that you want to delete your accout? This will delete your uploaded projects and comments!
+  deleteAccountWarning: |
+    Be aware:
+    You created %num_projects% project(s) and have %num_followers% follower(s). All of your projects will be removed. You won’t be able to login anymore and your projects will disappear from all lists. Deleting your profile cannot be undone!
+    Are you sure you want to leave us?
   editAccountSettings: Edit account settings
   notChangeVisibility: Can not change visibility
   notChangeVisibilityReason: The language version of your project is too high and thus it can not be set to visible.
@@ -572,6 +576,9 @@ api:
     passwordInvalidChars: 'Password contains invalid chars'
     usernameContainsEmail: "Username must not contain an email address"
     countryCodeInvalid: "Country code invalid"
+  updateUser:
+    currentPasswordMissing: "Current password is missing"
+    currentPasswordWrong: "Current password is wrong"
 
   projectsPost:
     invalid_checksum: 'Invalid checksum. Try uploading again!'

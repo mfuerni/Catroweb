@@ -7,7 +7,7 @@ import { getCookie } from '../security/CookieHelper'
 require('../../styles/components/own_project_list.scss')
 
 export class OwnProjectList {
-  constructor (container, apiUrl, theme, emptyMessage = '', actionConfiguration, projectInfoConfiguration) {
+  constructor (container, apiUrl, theme, emptyMessage = '', showErrorMessage) {
     this.container = container
     this.projectsContainer = container.getElementsByClassName('projects-container')[0]
     this.apiUrl = apiUrl
@@ -19,8 +19,9 @@ export class OwnProjectList {
     this.theme = theme
     this.emptyMessage = emptyMessage
     this.projectActionMenu = undefined
-    this.actionConfiguration = actionConfiguration
-    this.projectInfoConfiguration = projectInfoConfiguration
+    this.actionConfiguration = myProfileConfiguration.projectActions
+    this.projectInfoConfiguration = myProfileConfiguration.projectInfo
+    this.showErrorMessage = showErrorMessage
   }
 
   initialize () {
@@ -245,11 +246,32 @@ export class OwnProjectList {
           headers: new window.Headers({
             Authorization: 'Bearer ' + getCookie('BEARER')
           })
-        }).then(() => {
-          window.location.reload()
-        }).catch((error) => {
-          // TODO: show error to user
-          console.error(error)
+        }).then(response => {
+          switch (response.status) {
+            case 204:
+              // success
+              console.info('Project ' + id + ' deleted successfully.')
+              window.location.reload()
+              break
+            case 401:
+              // Invalid credentials
+              console.error('Delete Project ERROR 401: Invalid credentials', response)
+              this.showErrorMessage(myProfileConfiguration.messages.authenticationErrorText)
+              break
+            case 404:
+              console.error('Project to delete not found', response)
+              this.showErrorMessage(myProfileConfiguration.messages.deleteProjectNotFoundText)
+              break
+            case 400:
+            case 406:
+            default:
+              console.error('Delete Project ERROR', response)
+              this.showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
+              break
+          }
+        }).catch(reason => {
+          console.error('Delete Project FAILURE', reason)
+          this.showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
         })
       }
     })

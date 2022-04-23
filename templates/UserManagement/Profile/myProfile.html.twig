@@ -206,11 +206,13 @@
         url: '{{ path('profile_delete_account') }}'
       }
     },
-    errorMessages: {
-      title: '{{ 'error'|trans({}, 'catroweb') }}',
+    messages: {
+      errorTitle: '{{ 'error'|trans({}, 'catroweb') }}',
+      successTitle: '{{ 'success.text'|trans({}, 'catroweb') }}',
       okayButtonText: '{{ 'ok'|trans({}, 'catroweb') }}',
       unspecifiedErrorText: '{{ 'myprofile.unspecifiedError'|trans({}, 'catroweb')}}',
-      authentication: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim}}',
+      authenticationErrorText: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim}}',
+      deleteProjectNotFoundText: '{{ 'programs.deleteNotFoundError'|trans({}, 'catroweb')}}',
       security: {
         passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb') }}'
       },
@@ -218,7 +220,8 @@
         tooLarge: '{{ 'profile.avatar.pictureTooLarge'|trans({}, 'catroweb') }}',
         uploadError: '{{ 'profile.avatar.uploadError'|trans({}, 'catroweb') }}',
         noSupport: '{{ 'profile.avatar.noSupport'|trans({}, 'catroweb') }}'
-      }
+      },
+      passwordChangedSuccessText:  '{{ 'myprofile.passwordUpdated'|trans({}, 'catroweb') }}'
     },
     statusCodes: {
       ok: '{{ constant('Symfony\\Component\\HttpFoundation\\Response::HTTP_OK') }}'

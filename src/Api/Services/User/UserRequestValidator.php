@@ -9,6 +9,7 @@ use App\User\UserManager;
 use OpenAPI\Server\Model\RegisterRequest;
 use OpenAPI\Server\Model\ResetPasswordRequest;
 use OpenAPI\Server\Model\UpdateUserRequest;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -25,7 +26,7 @@ final class UserRequestValidator extends AbstractRequestValidator
   public const MODE_RESET_PASSWORD = 'reset_password_mode';
   public const MODE_UPDATE = 'update_mode';
 
-  public function __construct(ValidatorInterface $validator, TranslatorInterface $translator, private readonly UserManager $user_manager)
+  public function __construct(ValidatorInterface $validator, TranslatorInterface $translator, private readonly UserManager $user_manager, private readonly EncoderFactoryInterface $encoder_factory)
   {
     parent::__construct($validator, $translator);
   }
@@ -50,6 +51,7 @@ final class UserRequestValidator extends AbstractRequestValidator
     }
 
     if (!is_null(($request->getPassword()))) {
+      $this->validateCurrentPassword($user, $request->getCurrentPassword(), $locale, self::MODE_UPDATE);
       $this->validatePassword($request->getPassword(), $locale, self::MODE_UPDATE);
     }
 
@@ -113,6 +115,21 @@ final class UserRequestValidator extends AbstractRequestValidator
       $this->getValidationWrapper()->addError($this->__('api.registerUser.passwordTooLong', [], $locale), $KEY);
     } elseif (!mb_detect_encoding($password, 'ASCII', true)) {
       $this->getValidationWrapper()->addError($this->__('api.registerUser.passwordInvalidChars', [], $locale), $KEY);
+    }
+  }
+
+  private function validateCurrentPassword(User $user, ?string $current_password, string $locale, string $mode): void
+  {
+    $KEY = 'current_password';
+    if (self::MODE_UPDATE === $mode) { // non-update mode doesn't need current password
+      if (empty($current_password)) {
+        $this->getValidationWrapper()->addError($this->__('api.updateUser.currentPasswordMissing', [], $locale), $KEY);
+      } else {
+        $encoder = $this->encoder_factory->getEncoder($user);
+        if (!$encoder->isPasswordValid($user->getPassword(), $current_password, $user->getSalt())) {
+          $this->getValidationWrapper()->addError($this->__('api.updateUser.currentPasswordWrong', [], $locale), $KEY);
+        }
+      }
     }
   }
 }

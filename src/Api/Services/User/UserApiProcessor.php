@@ -55,7 +55,7 @@ final class UserApiProcessor extends AbstractApiProcessor
       $user->setUsername($request->getUsername());
     }
     if (!empty($request->getPassword())) {
-      $user->setPassword($request->getPassword());
+      $user->setPlainPassword($request->getPassword());
     }
     if (!empty($request->getAbout())) {
       $user->setAbout($request->getAbout());

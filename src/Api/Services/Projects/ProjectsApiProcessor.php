@@ -40,7 +40,7 @@ final class ProjectsApiProcessor extends AbstractApiProcessor
       return false;
     }
 
-    $program = $this->project_manager->getProjectByID($id);
+    $program = $this->project_manager->getProjectByID($id, true);
 
     if (!$program || $program[0]->getUser() != $user) {
       return false;

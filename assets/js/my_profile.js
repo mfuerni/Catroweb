@@ -33,6 +33,7 @@ import $ from 'jquery'
 import './components/fullscreen_list_modal'
 import './components/text_field'
 import './components/tab_bar'
+import { Modal } from 'bootstrap'
 import { MyProfile } from './custom/MyProfile'
 import { ProjectLoader } from './custom/ProjectLoader'
 import { setImageUploadListener } from './custom/ImageUpload'
@@ -47,7 +48,7 @@ require('../styles/custom/profile.scss')
 new PasswordVisibilityToggle()
 
 $(() => {
-  if (window.location.search.includes('ChangeSuccess')) {
+  if (window.location.search.includes('profileChangeSuccess')) {
     window.history.replaceState(undefined, document.title, window.location.origin + window.location.pathname)
   }
 
@@ -89,7 +90,7 @@ $(() => {
 
   const url = baseUrl + '/api/projects/user'
 
-  new OwnProjectList(projectsContainer, url, theme, emptyMessage, myProfileConfiguration.projectActions, myProfileConfiguration.projectInfo).initialize()
+  new OwnProjectList(projectsContainer, url, theme, emptyMessage, showErrorMessage).initialize()
 
   initProfilePictureChange()
   initSaveProfileSettings()
@@ -101,11 +102,16 @@ $(() => {
 })
 
 const showErrorMessage = function (message) {
-  Swal.fire({
-    title: myProfileConfiguration.errorMessages.title,
+  return Swal.fire({
+    title: myProfileConfiguration.messages.errorTitle,
     text: message,
     icon: 'error',
-    confirmButtonText: myProfileConfiguration.errorMessages.okayButtonText
+    customClass: {
+      confirmButton: 'btn btn-primary'
+    },
+    buttonsStyling: false,
+    allowOutsideClick: false,
+    confirmButtonText: myProfileConfiguration.messages.okayButtonText
   })
 }
 
@@ -114,11 +120,66 @@ const showErrorList = function (errors) {
     errors = Object.values(errors)
   }
 
-  Swal.fire({
-    title: myProfileConfiguration.errorMessages.title,
+  return Swal.fire({
+    title: myProfileConfiguration.messages.errorTitle,
     html: '<ul class="text-start"><li>' + errors.join('</li><li>') + '</li></ul>',
     icon: 'error',
-    confirmButtonText: myProfileConfiguration.errorMessages.okayButtonText
+    customClass: {
+      confirmButton: 'btn btn-primary'
+    },
+    buttonsStyling: false,
+    allowOutsideClick: false,
+    confirmButtonText: myProfileConfiguration.messages.okayButtonText
+  })
+}
+
+const showSuccessMessage = function (message) {
+  return Swal.fire({
+    title: myProfileConfiguration.messages.successTitle,
+    text: message,
+    icon: 'success',
+    customClass: {
+      confirmButton: 'btn btn-primary'
+    },
+    buttonsStyling: false,
+    allowOutsideClick: false,
+    confirmButtonText: myProfileConfiguration.messages.okayButtonText
+  })
+}
+
+const updateProfile = function (data, successCallback) {
+  window.fetch('/api/user', {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      Authorization: 'Bearer ' + getCookie('BEARER')
+    },
+    body: JSON.stringify(data)
+  }).then(response => {
+    switch (response.status) {
+      case 204:
+        // success
+        successCallback()
+        break
+      case 401:
+        // Invalid credentials
+        console.error('Save Profile ERROR 401: Invalid credentials', response)
+        showErrorMessage(myProfileConfiguration.messages.authenticationErrorText)
+        break
+      case 422:
+        response.json().then(errors => {
+          console.error('Save Profile ERROR 422', errors, response)
+          showErrorList(errors)
+        })
+        break
+      default:
+        console.error('Save Profile ERROR', response)
+        showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
+        break
+    }
+  }).catch(reason => {
+    console.error('Save Profile FAILURE', reason)
+    showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
   })
 }
 
@@ -135,7 +196,7 @@ const initProfilePictureChange = function () {
 
         reader.onerror = () => {
           // TODO: hide spinner
-          showErrorMessage(myProfileConfiguration.errorMessages.avatar.uploadError)
+          showErrorMessage(myProfileConfiguration.messages.avatar.uploadError)
         }
         reader.onload = event => {
           const image = event.currentTarget.result // base64 data url
@@ -160,39 +221,8 @@ const initSaveProfileSettings = function () {
       const formData = new window.FormData(form)
       const data = {}
       formData.forEach((value, key) => (data[key] = value))
-      console.debug('Save profile settings', Array.from(formData), data)
-      window.fetch('/api/user', {
-        method: 'PUT',
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: 'Bearer ' + getCookie('BEARER')
-        },
-        body: JSON.stringify(data)
-      }).then(response => {
-        switch (response.status) {
-          case 204:
-            // success
-            window.location.search = 'profileChangeSuccess'
-            break
-          case 401:
-            // Invalid credentials
-            console.error('Saving Profile ERROR 401: Invalid credentials', response)
-            showErrorMessage(myProfileConfiguration.errorMessages.authentication)
-            break
-          case 422:
-            response.json().then(errors => {
-              console.error('Saving Profile ERROR 422', errors, response)
-              showErrorList(errors)
-            })
-            break
-          default:
-            console.error('Save Profile ERROR', response)
-            showErrorMessage(myProfileConfiguration.errorMessages.unspecifiedErrorText)
-            break
-        }
-      }).catch(reason => {
-        console.error('Save Profile FAILURE', reason)
-        showErrorMessage(myProfileConfiguration.errorMessages.unspecifiedErrorText)
+      updateProfile(data, function () {
+        window.location.search = 'profileChangeSuccess'
       })
     }
   })
@@ -203,11 +233,18 @@ const initSaveSecuritySettings = function () {
     const form = document.getElementById('security-settings-form')
     if (form.reportValidity() === true) {
       const formData = new window.FormData(form)
-      if (formData.get('_password') !== formData.get('_repeat-password')) {
-        showErrorMessage(myProfileConfiguration.errorMessages.security.passwordsDontMatch)
+      if (formData.get('password') !== formData.get('repeat-password')) {
+        showErrorMessage(myProfileConfiguration.messages.security.passwordsDontMatch)
       } else {
-        console.debug('Save security settings', Array.from(formData))
-        // TODO: API call and error handling
+        updateProfile({
+          currentPassword: formData.get('current-password'),
+          password: formData.get('password')
+        }, function () {
+          showSuccessMessage(myProfileConfiguration.messages.passwordChangedSuccessText).then(() => {
+            form.reset()
+            Modal.getInstance(document.getElementById('security-settings-modal')).hide()
+          })
+        })
       }
     }
   })
@@ -232,12 +269,30 @@ const initDeleteAccount = function () {
       cancelButtonText: msgParts[4]
     }).then((result) => {
       if (result.value) {
-        $.post(myProfileConfiguration.userSettings.deleteAccount.url, null, function (data) {
-          switch (parseInt(data.statusCode)) {
-            case myProfileConfiguration.statusCodes.ok:
+        window.fetch('/api/user', {
+          method: 'DELETE',
+          headers: {
+            Authorization: 'Bearer ' + getCookie('BEARER')
+          }
+        }).then(response => {
+          switch (response.status) {
+            case 204:
               deleteCookie('BEARER', routingDataset.baseUrl + '/')
               window.location.href = routingDataset.index
+              break
+            case 401:
+              // Invalid credentials
+              console.error('Delete Profile ERROR 401: Invalid credentials', response)
+              showErrorMessage(myProfileConfiguration.messages.authenticationErrorText)
+              break
+            default:
+              console.error('Delete Profile ERROR', response)
+              showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
+              break
           }
+        }).catch(reason => {
+          console.error('Delete Profile FAILURE', reason)
+          showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
         })
       }
     })
