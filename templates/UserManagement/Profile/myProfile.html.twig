@@ -13,9 +13,11 @@
       {{ 'myprofile.profileChangeSuccess'|trans({}, 'catroweb') }}
     </div>
   {% endif %}
-  <div id="alert-img-upload-success" class="alert alert-success d-none">
-    {{ 'success.imgUpload'|trans({}, 'catroweb') }}
-  </div>
+  {% if queryParams.profilePictureChangeSuccess is defined %}
+    <div id="alert-profile-picture-change-success" class="alert alert-success">
+      {{ 'success.imgUpload'|trans({}, 'catroweb') }}
+    </div>
+  {% endif %}
   <div class="profile__basic-info">
     <div class="profile__basic-info__avatar">
       <img class="profile__basic-info__avatar__img" alt="{{ 'profile.picture' | trans({}, 'catroweb') }}"
@@ -216,11 +218,7 @@
       security: {
         passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb') }}'
       },
-      avatar: {
-        tooLarge: '{{ 'profile.avatar.pictureTooLarge'|trans({}, 'catroweb') }}',
-        uploadError: '{{ 'profile.avatar.uploadError'|trans({}, 'catroweb') }}',
-        noSupport: '{{ 'profile.avatar.noSupport'|trans({}, 'catroweb') }}'
-      },
+      profilePictureInvalid: '{{ 'api.registerUser.pictureInvalid'|trans({}, 'catroweb') }}',
       passwordChangedSuccessText:  '{{ 'myprofile.passwordUpdated'|trans({}, 'catroweb') }}'
     },
     statusCodes: {

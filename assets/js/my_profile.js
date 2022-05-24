@@ -48,7 +48,7 @@ require('../styles/custom/profile.scss')
 new PasswordVisibilityToggle()
 
 $(() => {
-  if (window.location.search.includes('profileChangeSuccess')) {
+  if (window.location.search.includes('profileChangeSuccess') || window.location.search.includes('profilePictureChangeSuccess')) {
     window.history.replaceState(undefined, document.title, window.location.origin + window.location.pathname)
   }
 
@@ -147,7 +147,7 @@ const showSuccessMessage = function (message) {
   })
 }
 
-const updateProfile = function (data, successCallback) {
+const updateProfile = function (data, successCallback, finalCallback) {
   window.fetch('/api/user', {
     method: 'PUT',
     headers: {
@@ -160,26 +160,31 @@ const updateProfile = function (data, successCallback) {
       case 204:
         // success
         successCallback()
+        if(finalCallback) finalCallback()
         break
       case 401:
         // Invalid credentials
         console.error('Save Profile ERROR 401: Invalid credentials', response)
         showErrorMessage(myProfileConfiguration.messages.authenticationErrorText)
+        if(finalCallback) finalCallback()
         break
       case 422:
         response.json().then(errors => {
           console.error('Save Profile ERROR 422', errors, response)
           showErrorList(errors)
+          if(finalCallback) finalCallback()
         })
         break
       default:
         console.error('Save Profile ERROR', response)
         showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
+        if(finalCallback) finalCallback()
         break
     }
   }).catch(reason => {
     console.error('Save Profile FAILURE', reason)
     showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
+    if(finalCallback) finalCallback()
   })
 }
 
@@ -188,24 +193,21 @@ const initProfilePictureChange = function () {
     el.addEventListener('click', function () {
       const input = document.createElement('input')
       input.type = 'file'
+      input.accept = 'image/*'
       input.onchange = event => {
         // TODO: show loading spinner
-        console.debug('new file', event, input.files)
-
         const reader = new window.FileReader()
-
         reader.onerror = () => {
           // TODO: hide spinner
-          showErrorMessage(myProfileConfiguration.messages.avatar.uploadError)
+          showErrorMessage(myProfileConfiguration.messages.profilePictureInvalid)
         }
         reader.onload = event => {
           const image = event.currentTarget.result // base64 data url
-          console.debug('Loading image', image
-          )
-          // TODO: API call and error handling
-
-          // on success:
-          //document.getElementById('alert-img-upload-success').classList.remove('d-none')
+          updateProfile({'picture': image}, function() {
+            window.location.search = 'profilePictureChangeSuccess'
+          }, function() {
+            // TODO: hide spinner
+          })
         }
         reader.readAsDataURL(input.files[0])
       }

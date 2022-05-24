@@ -31,6 +31,10 @@ final class UserApiProcessor extends AbstractApiProcessor
     $user->setUploadToken($this->token_generator->generateToken());
     $this->user_manager->updateUser($user);
 
+    if (!empty($request->getPicture())) {
+      // Resize happens in UserRequestValidator::validateAndResizePicture
+      $user->setAvatar($request->getPicture());
+    }
     if (!empty($request->getAbout())) {
       $user->setAbout($request->getAbout());
     }
@@ -56,6 +60,10 @@ final class UserApiProcessor extends AbstractApiProcessor
     }
     if (!empty($request->getPassword())) {
       $user->setPlainPassword($request->getPassword());
+    }
+    if (!empty($request->getPicture())) {
+      // Resize happens in UserRequestValidator::validateAndResizePicture
+      $user->setAvatar($request->getPicture());
     }
     if (!empty($request->getAbout())) {
       $user->setAbout($request->getAbout());

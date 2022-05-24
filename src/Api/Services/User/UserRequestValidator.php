@@ -37,6 +37,12 @@ final class UserRequestValidator extends AbstractRequestValidator
     $this->validateUsername($request->getUsername(), $locale, self::MODE_REGISTER);
     $this->validatePassword($request->getPassword(), $locale, self::MODE_REGISTER);
 
+    if (!is_null($request->getPicture())) {
+      $picture_out = null;
+      $this->validateAndResizePicture($request->getPicture(), $picture_out, $locale);
+      $request->setPicture($picture_out);
+    }
+
     return $this->getValidationWrapper();
   }
 
@@ -53,6 +59,12 @@ final class UserRequestValidator extends AbstractRequestValidator
     if (!is_null(($request->getPassword()))) {
       $this->validateCurrentPassword($user, $request->getCurrentPassword(), $locale, self::MODE_UPDATE);
       $this->validatePassword($request->getPassword(), $locale, self::MODE_UPDATE);
+    }
+
+    if (!is_null($request->getPicture())) {
+      $picture_out = null;
+      $this->validateAndResizePicture($request->getPicture(), $picture_out, $locale);
+      $request->setPicture($picture_out);
     }
 
     return $this->getValidationWrapper();
@@ -130,6 +142,26 @@ final class UserRequestValidator extends AbstractRequestValidator
           $this->getValidationWrapper()->addError($this->__('api.updateUser.currentPasswordWrong', [], $locale), $KEY);
         }
       }
+    }
+  }
+
+  private function validateAndResizePicture(string $picture_in, ?string &$picture_out, string $locale)
+  {
+    $KEY = 'picture';
+    $image_size = 300;
+    if (preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $picture_in, $matches) === 1) {
+      // $image_type = $matches[1];
+      $image_binary = base64_decode($matches[2]);
+      try {
+        $imagick = new \Imagick();
+        $imagick->readImageBlob($image_binary);
+        $imagick->cropThumbnailImage($image_size, $image_size);
+        $picture_out = 'data:' . $imagick->getImageMimeType() . ';base64,' . base64_encode($imagick->getImageBlob());
+      } catch (\ImagickException $e) {
+        $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
+      }
+    } else {
+      $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
     }
   }
 }
