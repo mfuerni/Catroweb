@@ -239,6 +239,7 @@
        data-trans-clipboard-success="{{ "clipboard.success_project"|trans({}, "catroweb") }}"
        data-trans-clipboard-fail="{{ "clipboard.fail"|trans({}, "catroweb") }}"
   ></div>
+  {# TODO: Disable Report Program for now. Needs a separate flag in database - a new concept!
   <div class="js-project-report"
        data-project-id="{{ program.id }}"
        data-path-report="{{ path('catrobat_api_report_program') }}"
@@ -258,6 +259,7 @@
        data-trans-more-info="{{ "more-information"|trans({}, "catroweb") }}"
        data-trans-less-info="{{ "less-information"|trans({}, "catroweb") }}"
   ></div>
+  #}
   <div class="js-project-description-credits"
        data-project-id="{{ program.id }}"
        data-has-description={% if program.description %} true {% else %} false {% endif %}

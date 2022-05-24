@@ -7,7 +7,6 @@ import { ProjectList } from './components/project_list'
 import { setImageUploadListener } from './custom/ImageUpload'
 import { Program } from './custom/Program'
 import { shareLink } from './custom/ShareLink'
-import { ProgramReport } from './custom/ProgramReport'
 import { ProgramDescription } from './custom/ProgramDescription'
 import { ProgramCredits } from './custom/ProgramCredits'
 import { ProgramComments } from './custom/ProgramComments'
@@ -24,7 +23,6 @@ require('../styles/custom/program.scss')
 
 const $project = $('.js-project')
 const $projectShare = $('.js-project-share')
-const $projectReport = $('.js-project-report')
 const $projectDescriptionCredits = $('.js-project-description-credits')
 const $projectComments = $('.js-project-comments')
 const $appLanguage = $('#app-language')
@@ -89,6 +87,7 @@ shareLink(
   $projectShare.data('trans-clipboard-fail')
 )
 
+/* TODO: Disable Report Program for now. Needs a separate flag in database - a new concept!
 ProgramReport(
   $projectReport.data('project-id'),
   $projectReport.data('path-report'),
@@ -106,6 +105,7 @@ ProgramReport(
   $projectReport.data('const-ok'),
   $projectReport.data('logged-in')
 )
+*/
 
 Program(
   $project.data('project-id'),
