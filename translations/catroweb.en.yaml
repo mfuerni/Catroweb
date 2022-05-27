@@ -327,11 +327,6 @@ myprofile:
   passwordUpdated: Your password was successfully updated.
   avatar: Avatar
   email: Email
-  editAvatar: Edit avatar
-  editUsername: Edit username
-  editPassword: Edit password
-  editCountry: Edit country
-  editEmail: Edit email
   deleteAccount: Delete account
   deleteAccountWarning: |
     Be aware:

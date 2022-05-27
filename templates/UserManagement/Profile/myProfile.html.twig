@@ -139,55 +139,9 @@
     </div>
   </template>
 
-  {% include 'UserManagement/Profile/myProfileData.html.twig' %} {# TODO: Remove it. #}
-
-  <div class="mt-5"></div>
-  <div id="myprofile-programs">
-    <h2 class="header mb-0">
-      {{ "profile.myPrograms"|trans({}, "catroweb") }}
-    </h2>
-    <div class="programs mt-4"></div>
-  </div>
-
 {% endblock %}
 
 {% block javascript %}
-<script>
-    const profileUrl = '{{ path('profile') }}';
-    const saveUsername = '{{ path('username_save') }}';
-    const saveEmailUrl = '{{ path('email_save') }}';
-    const savePasswordUrl = '{{ path('password_save') }}';
-    const deleteAccountUrl = '{{ path('profile_delete_account') }}';
-    const toggleVisibilityUrl = '{{ path('profile_toggle_program_visibility') }}';
-    const uploadUrl = '{{ path('profile_upload_avatar') }}';
-    const statusCodeOk = '{{ constant('Symfony\\Component\\HttpFoundation\\Response::HTTP_OK') }}';
-    const statusCodeUsernameAlreadyExists = '812';
-    const statusCodeUsernameMissing = '811';
-    const statusCodeUsernameInvalid = '804';
-    const statusCodeUserEmailAlreadyExists = '810';
-    const statusCodeUserEmailMissing = '808';
-    const statusCodeUserEmailInvalid = '765';
-    const statusCodeUsernamePasswordEqual = '813';
-    const statusCodeUserPasswordTooShort = '753';
-    const statusCodeUserPasswordTooLong = '806';
-    const statusCodeUserPasswordNotEqualPassword2 = '802';
-    const statusCodePasswordInvalid = '401';
-    const successText = '{{ "success.text"|trans({}, "catroweb") }}';
-    const checkMailText = '{{ "myprofile.checkMail"|trans({}, "catroweb") }}';
-    const passwordUpdatedText = '{{ "myprofile.passwordUpdated"|trans({}, "catroweb") }}';
-    const programCanNotChangeVisibilityTitle = '{{ "myprofile.notChangeVisibility"|trans({}, "catroweb") }}';
-    const programCanNotChangeVisibilityText = '{{ "myprofile.notChangeVisibilityReason"|trans({}, "catroweb") }}';
-    const statusCodeUsernameContainsEmail = '809';
-    const deleteConfirmationMessage = `{{ "programs.deleteAccountConfirmation"|trans({}, "catroweb") }}`;
-    const noProgramsText = '{{ "programs.noPrograms"|trans({}, "catroweb") }}';
-    const programChangeVisibility = `{{ "programs.changeVisibility"|trans({}, "catroweb") }}`;
-    const programDeleteConfirmation = `{{ "programs.deleteConfirmation"|trans({}, "catroweb") }}`;
-  </script>
-  <script>
-    const uploadAvatarUrl = '{{ path('profile_upload_avatar') }}'
-    const apiUserPrograms = '{{ path('api_user_programs') }}'
-    const userID = '{{ app.user.id }}'
-  </script>
 <script>
   const myProfileConfiguration = {
     projectInfo: {
@@ -210,8 +164,7 @@
     },
     userSettings: {
       deleteAccount: {
-        confirmationText: `{{ "programs.deleteAccountConfirmation"|trans({}, "catroweb") }}`,
-        url: '{{ path('profile_delete_account') }}'
+        confirmationText: `{{ "programs.deleteAccountConfirmation"|trans({}, "catroweb") }}`
       }
     },
     messages: {
