@@ -27,6 +27,13 @@ export class OwnProjectList {
   initialize () {
     this.fetchMore(true)
     this._initActionMenu()
+
+    // remove loading spinners when loading from cache (e.g. browser back button)
+    window.addEventListener('pageshow', ev => {
+      if (ev.persisted) {
+        this.projectsContainer.querySelectorAll('.loading-spinner-backdrop').forEach(elem => elem.remove())
+      }
+    })
   }
 
   _initActionMenu () {
@@ -83,8 +90,8 @@ export class OwnProjectList {
           self.projectsData[project.id] = project
           const projectElement = self._generate(project)
           self.projectsContainer.appendChild(projectElement)
-          projectElement.addEventListener('click', function (event) {
-            // TODO show (global) loading spinner
+          projectElement.addEventListener('click', function () {
+            self._addLoadingSpinner(projectElement)
           }, false)
         })
         self.container.classList.remove('loading')
@@ -298,9 +305,12 @@ export class OwnProjectList {
       cancelButtonText: msgParts[6]
     }).then((result) => {
       if (result.value) {
+        const projectElem = document.querySelector('.own-project-list__project[data-id="' + id + '"]')
+        self._addLoadingSpinner(projectElem)
+        // TODO: define and implement new API endpoint for updating projects
         $.get(configuration.url + '/' + id, {}, function (data) {
           if (data === 'true') {
-            const visibilityElem = document.querySelector('.own-project-list__project[data-id="' + id + '"] .own-project-list__project__details__visibility')
+            const visibilityElem = projectElem.querySelector('.own-project-list__project__details__visibility')
             if (project.private) {
               project.private = false
               visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock_open'
@@ -311,6 +321,7 @@ export class OwnProjectList {
               visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPrivateText
             }
           } else {
+            // TODO: can this be the case? Is the error message (language version too high) still reasonable?
             Swal.fire({
               title: configuration.errorTitle,
               text: configuration.errorMessage,
@@ -322,8 +333,32 @@ export class OwnProjectList {
               allowOutsideClick: false
             })
           }
+        }).fail(function () {
+          Swal.fire({
+            title: configuration.errorTitle,
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false,
+            allowOutsideClick: false
+          })
+        }).always(function () {
+          self._removeLoadingSpinner(projectElem)
         })
       }
     })
+  }
+
+  _addLoadingSpinner (toElement) {
+    const newSpinner = document.getElementById('profile-loading-spinner-template').content.cloneNode(true)
+    toElement.appendChild(newSpinner)
+  }
+
+  _removeLoadingSpinner (fromElement) {
+    const spinner = fromElement.querySelector('.loading-spinner-backdrop')
+    if (spinner) {
+      fromElement.removeChild(spinner)
+    }
   }
 }

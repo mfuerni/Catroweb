@@ -160,31 +160,31 @@ const updateProfile = function (data, successCallback, finalCallback) {
       case 204:
         // success
         successCallback()
-        if(finalCallback) finalCallback()
+        if (finalCallback) finalCallback()
         break
       case 401:
         // Invalid credentials
         console.error('Save Profile ERROR 401: Invalid credentials', response)
         showErrorMessage(myProfileConfiguration.messages.authenticationErrorText)
-        if(finalCallback) finalCallback()
+        if (finalCallback) finalCallback()
         break
       case 422:
         response.json().then(errors => {
           console.error('Save Profile ERROR 422', errors, response)
           showErrorList(errors)
-          if(finalCallback) finalCallback()
+          if (finalCallback) finalCallback()
         })
         break
       default:
         console.error('Save Profile ERROR', response)
         showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
-        if(finalCallback) finalCallback()
+        if (finalCallback) finalCallback()
         break
     }
   }).catch(reason => {
     console.error('Save Profile FAILURE', reason)
     showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
-    if(finalCallback) finalCallback()
+    if (finalCallback) finalCallback()
   })
 }
 
@@ -194,19 +194,24 @@ const initProfilePictureChange = function () {
       const input = document.createElement('input')
       input.type = 'file'
       input.accept = 'image/*'
-      input.onchange = event => {
-        // TODO: show loading spinner
+      input.onchange = () => {
+        const loadingSpinner = document.getElementById('profile-loading-spinner-template').content.cloneNode(true)
+        el.appendChild(loadingSpinner)
         const reader = new window.FileReader()
         reader.onerror = () => {
-          // TODO: hide spinner
+          if (loadingSpinner && loadingSpinner.parentElement === el) {
+            el.removeChild(loadingSpinner)
+          }
           showErrorMessage(myProfileConfiguration.messages.profilePictureInvalid)
         }
         reader.onload = event => {
           const image = event.currentTarget.result // base64 data url
-          updateProfile({'picture': image}, function() {
+          updateProfile({ 'picture': image }, function () {
             window.location.search = 'profilePictureChangeSuccess'
-          }, function() {
-            // TODO: hide spinner
+          }, function () {
+            if (loadingSpinner && loadingSpinner.parentElement === el) {
+              el.removeChild(loadingSpinner)
+            }
           })
         }
         reader.readAsDataURL(input.files[0])

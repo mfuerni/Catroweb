@@ -103,12 +103,12 @@
            data-base-url="{{ app.request.getBaseURL() }}"
            data-flavor="{{ flavor() }}"
            data-empty-message="{{ "programs.noPrograms"|trans({}, 'catroweb') }}"
-           class="project-list loading">
+           class="own-project-list loading">
         <div class="container">
           <div class="lazyload projects-spinner-container">
             {% include 'components/loading_spinner.html.twig' only %}
           </div>
-          <div class="lazyload project-list__wrapper">
+          <div class="lazyload own-project-list__wrapper">
             <div class="lazyload projects-container"></div>
           </div>
         </div>
@@ -132,6 +132,12 @@
       </li>
     </ul>
   </div>
+
+  <template id="profile-loading-spinner-template" class="d-none">
+    <div class="loading-spinner-backdrop">
+      {% include 'components/loading_spinner.html.twig' with {'size': 'large'} %}
+    </div>
+  </template>
 
   {% include 'UserManagement/Profile/myProfileData.html.twig' %} {# TODO: Remove it. #}
 

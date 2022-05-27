@@ -12,15 +12,6 @@
 $max-project-thumb-size: 160px;
 $container-padding: 1rem;
 
-@keyframes spinner {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0.3;
-  }
-}
-
 .own-project-list {
   display: flex;
   flex-direction: column;
@@ -30,12 +21,13 @@ $container-padding: 1rem;
   }
 
   &.loading {
-    .project-list__wrapper {
-      animation: spinner;
-      animation-fill-mode: both;
-      animation-iteration-count: infinite;
-      animation-duration: 1s;
-      animation-direction: alternate;
+    .own-project-list__wrapper {
+      display: none;
+    }
+
+    .projects-spinner-container {
+      display: flex;
+      justify-content: center;
     }
   }
 
@@ -53,6 +45,7 @@ $container-padding: 1rem;
     flex-direction: row;
     align-items: center;
     margin-bottom: 1rem;
+    position: relative; // important for loading spinner
 
     &:hover {
       text-decoration: none;
