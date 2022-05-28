@@ -78,7 +78,6 @@ const showSuccessMessage = function (message) {
 }
 
 class OwnProfile {
-
   initializeAll () {
     this.initProfilePictureChange()
     this.initSaveProfileSettings()
@@ -146,7 +145,7 @@ class OwnProfile {
           }
           reader.onload = event => {
             const image = event.currentTarget.result // base64 data url
-            self.updateProfile({ 'picture': image }, function () {
+            self.updateProfile({ picture: image }, function () {
               window.location.search = 'profilePictureChangeSuccess'
             }, function () {
               if (loadingSpinner && loadingSpinner.parentElement === el) {
@@ -248,5 +247,4 @@ class OwnProfile {
       $('.swal2-container.swal2-shown').css('background-color', 'rgba(255, 0, 0, 0.75)')// changes the color of the overlay
     })
   }
-
 }

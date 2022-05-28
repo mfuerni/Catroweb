@@ -1,3 +1,5 @@
+/* global myProfileConfiguration */
+
 import $ from 'jquery'
 import { Corner, MDCMenu } from '@material/menu'
 import { MDCMenuSurfaceFoundation } from '@material/menu-surface'

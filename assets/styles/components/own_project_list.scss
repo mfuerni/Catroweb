@@ -4,7 +4,6 @@
 @use "~@material/list/mdc-list";
 @use "~@material/menu-surface/mdc-menu-surface";
 @use "~@material/menu/mdc-menu";
-
 @import "../base/variables";
 @import "../base/mixins";
 @import "~bootstrap/scss/mixins";
@@ -65,6 +64,7 @@ $container-padding: 1rem;
       @include media-breakpoint-up(sm) {
         width: 8rem;
       }
+
       @include media-breakpoint-up(xxl) {
         width: 10rem;
       }
@@ -78,17 +78,17 @@ $container-padding: 1rem;
       &__name {
         font-size: 1.2rem;
         padding-bottom: 0.4rem;
-        @include force-word-break();
+
+        @include force-word-break;
       }
 
       &__properties {
         display: grid;
-        grid-template-columns: max-content max-content;
-        grid-template-rows: max-content max-content;
+        grid-template:
+          ". ." max-content
+          ". ." max-content
+          / max-content max-content;
         gap: 0.25rem 0.25rem;
-        grid-template-areas:
-    ". ."
-    ". .";
         padding-bottom: 0.4rem;
 
         &__property {
@@ -124,7 +124,6 @@ $container-padding: 1rem;
     &__action {
       flex: 0 0 auto;
     }
-
 
     &__property {
       display: flex;
