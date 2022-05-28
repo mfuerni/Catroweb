@@ -18,7 +18,6 @@ import { ProgramName } from './custom/ProgramName'
 import { ProjectEditorTextFieldModel } from './components/ProjectEditorTextFieldModel'
 import { ProjectEditorModel } from './components/ProjectEditorModel'
 
-require('../styles/custom/profile.scss')
 require('../styles/custom/program.scss')
 
 const $project = $('.js-project')
