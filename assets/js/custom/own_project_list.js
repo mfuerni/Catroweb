@@ -260,8 +260,7 @@ export class OwnProjectList {
   _actionToggleVisibility (id) {
     const self = this
     const project = this.projectsData[id]
-    const configuration = this.actionConfiguration.visibility
-    const msgParts = configuration.confirmationText
+    const msgParts = this.actionConfiguration.visibility.confirmationText
       .replaceAll('%programName%', '“' + project.name + '”').split('\n')
     Swal.fire({
       title: msgParts[0],
