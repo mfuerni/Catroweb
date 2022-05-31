@@ -56,18 +56,21 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     $project = $this->facade->getLoader()->findProjectByID($id, true);
     if (is_null($project)) {
       $responseCode = Response::HTTP_NOT_FOUND;
+
       return null;
     }
 
     $user = $this->facade->getAuthenticationManager()->getAuthenticatedUser();
     if (is_null($user)) {
       $responseCode = Response::HTTP_UNAUTHORIZED;
+
       return null;
     }
 
     if (!is_null($project->getUser()) && $project->getUser() !== $user) {
       // project needs to be owned by the logged-in user
       $responseCode = Response::HTTP_FORBIDDEN;
+
       return null;
     }
 
@@ -83,18 +86,19 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     }
 
     $result = $this->facade->getProcessor()->updateProject($project, $update_project_request);
-    if ($result === true) {
+    if (true === $result) {
       $responseCode = Response::HTTP_NO_CONTENT;
-      return null;
-    } else {
-      $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-      $error_response =  $this->facade->getResponseManager()->createUpdateFailureResponse($result, $accept_language);
-      $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $error_response);
-      $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 
-      return $error_response;
+      return null;
     }
+    $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+    $error_response = $this->facade->getResponseManager()->createUpdateFailureResponse($result, $accept_language);
+    $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $error_response);
+    $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
+
+    return $error_response;
   }
+
   /**
    * {@inheritdoc}
    */

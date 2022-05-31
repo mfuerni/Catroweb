@@ -41,59 +41,75 @@ final class MediaLibraryResponseManager extends AbstractResponseManager
 
   public function createMediaFileResponse(MediaPackageFile $media_package_file, ?string $attributes): MediaFileResponse
   {
-    if(empty($attributes)) {
-      $attributes_list = ["id", "name"];
+    if (empty($attributes)) {
+      $attributes_list = ['id', 'name'];
     } else {
       $attributes_list = explode(',', $attributes);
     }
 
     $data = [];
-    if (in_array('id', $attributes_list)) $data['id'] = $media_package_file->getId();
-    if (in_array('name', $attributes_list)) $data['name'] = $media_package_file->getName();
-    if (in_array('flavors', $attributes_list)) $data['flavors'] = $media_package_file->getFlavorNames();
-    if (in_array('packages', $attributes_list)) $data['packages'] = $media_package_file->getCategory()->getPackageNames();
-    if (in_array('category', $attributes_list)) $data['category'] = $media_package_file->getCategory()->getName();
-    if (in_array('author', $attributes_list)) $data['author'] = $media_package_file->getAuthor();
-    if (in_array('extension', $attributes_list)) $data['extension'] = $media_package_file->getExtension();
-    if (in_array('download_url', $attributes_list)) $data['download_url'] = $this->url_generator->generate(
+    if (in_array('id', $attributes_list, true)) {
+      $data['id'] = $media_package_file->getId();
+    }
+    if (in_array('name', $attributes_list, true)) {
+      $data['name'] = $media_package_file->getName();
+    }
+    if (in_array('flavors', $attributes_list, true)) {
+      $data['flavors'] = $media_package_file->getFlavorNames();
+    }
+    if (in_array('packages', $attributes_list, true)) {
+      $data['packages'] = $media_package_file->getCategory()->getPackageNames();
+    }
+    if (in_array('category', $attributes_list, true)) {
+      $data['category'] = $media_package_file->getCategory()->getName();
+    }
+    if (in_array('author', $attributes_list, true)) {
+      $data['author'] = $media_package_file->getAuthor();
+    }
+    if (in_array('extension', $attributes_list, true)) {
+      $data['extension'] = $media_package_file->getExtension();
+    }
+    if (in_array('download_url', $attributes_list, true)) {
+      $data['download_url'] = $this->url_generator->generate(
           'download_media',
           [
             'theme' => $this->parameter_bag->get('umbrellaTheme'),
             'id' => $media_package_file->getId(),
           ],
           UrlGenerator::ABSOLUTE_URL);
+    }
 
-    if (in_array('size', $attributes_list)) {
+    if (in_array('size', $attributes_list, true)) {
       $file = $this->media_package_file_repository->getMediaFile($media_package_file->getId(), $media_package_file->getExtension());
       $data['size'] = $file->getSize();
     }
 
-    if (in_array('file_type', $attributes_list)) {
+    if (in_array('file_type', $attributes_list, true)) {
       $extension = $media_package_file->getExtension();
 
       $imageExtensions = [
-          'bmp', 'cgm', 'g3', 'gif', 'ief', 'jpeg', 'ktx', 'png', 'btif', 'sgi', 'svg', 'tiff', 'psd', 'uvi', 'sub', 'djvu',
-          'dwg', 'dxf', 'fbs', 'fpx', 'fst', 'mmr', 'rlc', 'mdi', 'wdp', 'npx', 'wbmp', 'xif', 'webp', '3ds', 'ras', 'cmx',
-          'fh', 'ico', 'sid', 'pcx', 'pic', 'pnm', 'pbm', 'pgm', 'ppm', 'rgb', 'tga', 'xbm', 'xpm', 'xwd',
+        'bmp', 'cgm', 'g3', 'gif', 'ief', 'jpeg', 'ktx', 'png', 'btif', 'sgi', 'svg', 'tiff', 'psd', 'uvi', 'sub', 'djvu',
+        'dwg', 'dxf', 'fbs', 'fpx', 'fst', 'mmr', 'rlc', 'mdi', 'wdp', 'npx', 'wbmp', 'xif', 'webp', '3ds', 'ras', 'cmx',
+        'fh', 'ico', 'sid', 'pcx', 'pic', 'pnm', 'pbm', 'pgm', 'ppm', 'rgb', 'tga', 'xbm', 'xpm', 'xwd',
       ];
       $soundExtensions = [
-          'adp', 'au', 'mid', 'mp4a', 'mpga', 'oga', 's3m', 'sil', 'uva', 'eol', 'dra', 'dts', 'dtshd', 'lvp', 'pya',
-          'ecelp4800', 'ecelp7470', 'ecelp9600', 'rip', 'weba', 'aac', 'aif', 'caf', 'flac', 'mka', 'm3u', 'wax', 'wma',
-          'ram', 'rmp', 'wav', 'xm',
+        'adp', 'au', 'mid', 'mp4a', 'mpga', 'oga', 's3m', 'sil', 'uva', 'eol', 'dra', 'dts', 'dtshd', 'lvp', 'pya',
+        'ecelp4800', 'ecelp7470', 'ecelp9600', 'rip', 'weba', 'aac', 'aif', 'caf', 'flac', 'mka', 'm3u', 'wax', 'wma',
+        'ram', 'rmp', 'wav', 'xm',
       ];
       $videoExtensions = [
-          '3gp', '3g2', 'h261', 'h263', 'h264', 'jpgv', 'jpm', 'mj2', 'mp4', 'mpeg', 'ogv', 'qt', 'uvh', 'uvm', 'uvp',
-          'uvs', 'uvv', 'dvb', 'fvt', 'mxu', 'pyv', 'uvu', 'viv', 'webm', 'f4v', 'fli', 'flv', 'm4v', 'mkv', 'mng', 'asf',
-          'vob', 'wm', 'wmv', 'wmx', 'wvx', 'avi', 'movie', 'smv',
+        '3gp', '3g2', 'h261', 'h263', 'h264', 'jpgv', 'jpm', 'mj2', 'mp4', 'mpeg', 'ogv', 'qt', 'uvh', 'uvm', 'uvp',
+        'uvs', 'uvv', 'dvb', 'fvt', 'mxu', 'pyv', 'uvu', 'viv', 'webm', 'f4v', 'fli', 'flv', 'm4v', 'mkv', 'mng', 'asf',
+        'vob', 'wm', 'wmv', 'wmx', 'wvx', 'avi', 'movie', 'smv',
       ];
 
-      if ($extension === 'catrobat') {
+      if ('catrobat' === $extension) {
         $data['file_type'] = 'project';
-      } else if (in_array($extension, $imageExtensions, true)) {
+      } elseif (in_array($extension, $imageExtensions, true)) {
         $data['file_type'] = 'image';
-      } else if (in_array($extension, $soundExtensions, true)) {
+      } elseif (in_array($extension, $soundExtensions, true)) {
         $data['file_type'] = 'sound';
-      } else if (in_array($extension, $videoExtensions, true)) {
+      } elseif (in_array($extension, $videoExtensions, true)) {
         $data['file_type'] = 'video';
       } else {
         $data['file_type'] = 'other';

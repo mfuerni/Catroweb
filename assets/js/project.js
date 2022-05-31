@@ -19,6 +19,7 @@ import { ProgramName } from './custom/ProgramName'
 import ProjectApi from './api/ProjectApi'
 import { ProjectEditorTextFieldModel } from './components/ProjectEditorTextFieldModel'
 import { ProjectEditorModel } from './components/ProjectEditorModel'
+import MessageDialogs from './components/MessageDialogs'
 
 require('../styles/custom/program.scss')
 
@@ -169,11 +170,11 @@ function initProjectScreenshotUpload () {
       const reader = new window.FileReader()
       reader.onerror = () => {
         document.getElementById('upload-image-spinner').classList.add('d-none')
-        showErrorMessage(projectConfiguration.messages.screenshotInvalid)
+        MessageDialogs.showErrorMessage(projectConfiguration.messages.screenshotInvalid)
       }
       reader.onload = event => {
         const image = event.currentTarget.result // base64 data url
-        ProjectApi.update($project.data('project-id'), {screenshot: image}, function () {
+        ProjectApi.update($project.data('project-id'), { screenshot: image }, function () {
           const imageElement = document.getElementById('project-thumbnail-big')
           if (imageElement.src.includes('?')) {
             imageElement.src += '&x=' + new Date().getTime()
@@ -184,7 +185,6 @@ function initProjectScreenshotUpload () {
           setTimeout(function () {
             document.querySelector('.text-img-upload-success').classList.add('d-none')
           }, 3000)
-
         }, function () {
           document.getElementById('upload-image-spinner').classList.add('d-none')
         })
@@ -193,7 +193,6 @@ function initProjectScreenshotUpload () {
     }
     input.click()
   })
-
 }
 
 initProjects()

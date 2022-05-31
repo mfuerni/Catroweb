@@ -5,7 +5,6 @@ namespace App\Api\Services\Projects;
 use App\Api\Services\Base\AbstractApiProcessor;
 use App\DB\Entity\Project\Program;
 use App\DB\Entity\User\User;
-use App\DB\EntityRepository\Translation\ProjectCustomTranslationRepository;
 use App\Project\AddProgramRequest;
 use App\Project\CatrobatFile\ExtractedFileRepository;
 use App\Project\CatrobatFile\ProgramFileRepository;
@@ -17,14 +16,13 @@ use OpenAPI\Server\Model\UpdateProjectRequest;
 
 final class ProjectsApiProcessor extends AbstractApiProcessor
 {
-  public final const SERVER_ERROR_SAVE_XML = 1;
-  public final const SERVER_ERROR_SCREENSHOT = 2;
+  final public const SERVER_ERROR_SAVE_XML = 1;
+  final public const SERVER_ERROR_SCREENSHOT = 2;
 
   public function __construct(private readonly ProgramManager $project_manager,
                               private readonly EntityManagerInterface $entity_manager,
                               private readonly ExtractedFileRepository $extracted_file_repository,
                               private readonly ProgramFileRepository $file_repository,
-                              private readonly ProjectCustomTranslationRepository $project_custom_translation_repository,
                               private readonly ScreenshotRepository $screenshot_repository)
   {
   }
@@ -119,6 +117,7 @@ final class ProjectsApiProcessor extends AbstractApiProcessor
             // ignore
           }
         }
+
         return self::SERVER_ERROR_SCREENSHOT;
       }
     }
@@ -126,6 +125,7 @@ final class ProjectsApiProcessor extends AbstractApiProcessor
     if ($project_touched) {
       $this->project_manager->save($project);
     }
+
     return true;
   }
 

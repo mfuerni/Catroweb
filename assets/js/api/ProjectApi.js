@@ -16,8 +16,8 @@ export default class ProjectApi {
             .then(function (data) {
               MessageDialogs.showErrorMessage(data.error)
             }).catch(function () {
-            MessageDialogs.showErrorMessage(globalConfiguration.messages.unspecifiedErrorText)
-          })
+              MessageDialogs.showErrorMessage(globalConfiguration.messages.unspecifiedErrorText)
+            })
         }
       }, finalCallback
     ).run()

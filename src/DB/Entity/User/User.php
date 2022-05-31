@@ -585,36 +585,23 @@ class User extends BaseUser
     return 'prod' !== $app_env || $this->verified;
   }
 
-  /**
-   * @return string|null
-   */
   public function getAbout(): ?string
   {
     return $this->about;
   }
 
-  /**
-   * @param string|null $about
-   */
   public function setAbout(?string $about): void
   {
     $this->about = $about;
   }
 
-  /**
-   * @return string|null
-   */
   public function getCurrentlyWorkingOn(): ?string
   {
     return $this->currentlyWorkingOn;
   }
 
-  /**
-   * @param string|null $currentlyWorkingOn
-   */
   public function setCurrentlyWorkingOn(?string $currentlyWorkingOn): void
   {
     $this->currentlyWorkingOn = $currentlyWorkingOn;
   }
-
 }

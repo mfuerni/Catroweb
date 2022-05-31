@@ -1,4 +1,3 @@
-/* global globalConfiguration */
 /* global myProfileConfiguration */
 
 import { Corner, MDCMenu } from '@material/menu'
@@ -72,44 +71,44 @@ export class OwnProjectList {
       '&attributes=id,project_url,screenshot_small,screenshot_large,name,downloads,views,reactions,comments,private'
 
     new ApiFetch(url, 'GET', undefined, 'json').run().then(function (data) {
-        if (!Array.isArray(data)) {
-          console.error('Data received for own projects is no array!')
-          self.container.classList.remove('loading')
-          return
-        }
-
-        if (clear) {
-          Array.prototype.slice.call(self.projectsContainer.childNodes).forEach(function (child) {
-            self.projectsContainer.removeChild(child)
-          })
-        }
-
-        data.forEach(function (project) {
-          self.projectsData[project.id] = project
-          const projectElement = self._generate(project)
-          self.projectsContainer.appendChild(projectElement)
-          projectElement.addEventListener('click', function () {
-            self._addLoadingSpinner(projectElement)
-          }, false)
-        })
+      if (!Array.isArray(data)) {
+        console.error('Data received for own projects is no array!')
         self.container.classList.remove('loading')
-
-        self.projectsLoaded += data.length
-
-        if (self.projectsLoaded === 0 && self.empty === false) {
-          self.empty = true
-          if (self.emptyMessage) {
-            self.projectsContainer.appendChild(document.createTextNode(self.emptyMessage))
-            self.container.classList.add('empty-with-text')
-          } else {
-            self.container.classList.add('empty')
-          }
-        }
-
-        self.fetchActive = false
+        return
       }
+
+      if (clear) {
+        Array.prototype.slice.call(self.projectsContainer.childNodes).forEach(function (child) {
+          self.projectsContainer.removeChild(child)
+        })
+      }
+
+      data.forEach(function (project) {
+        self.projectsData[project.id] = project
+        const projectElement = self._generate(project)
+        self.projectsContainer.appendChild(projectElement)
+        projectElement.addEventListener('click', function () {
+          self._addLoadingSpinner(projectElement)
+        }, false)
+      })
+      self.container.classList.remove('loading')
+
+      self.projectsLoaded += data.length
+
+      if (self.projectsLoaded === 0 && self.empty === false) {
+        self.empty = true
+        if (self.emptyMessage) {
+          self.projectsContainer.appendChild(document.createTextNode(self.emptyMessage))
+          self.container.classList.add('empty-with-text')
+        } else {
+          self.container.classList.add('empty')
+        }
+      }
+
+      self.fetchActive = false
+    }
     ).catch(function (reason) {
-      console.error('Failed loading own projects', JSON.stringify(reason.data), reason.status, JSON.stringify(reason.response))
+      console.error('Failed loading own projects', reason)
       self.container.classList.remove('loading')
     })
   }
@@ -251,7 +250,7 @@ export class OwnProjectList {
             console.info('Project ' + id + ' deleted successfully.')
             window.location.reload()
           }, {
-            404: myProfileConfiguration.messages.deleteProjectNotFoundText,
+            404: myProfileConfiguration.messages.deleteProjectNotFoundText
           }).run()
       }
     })

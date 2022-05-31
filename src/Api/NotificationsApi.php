@@ -54,6 +54,7 @@ final class NotificationsApi extends AbstractApiController implements Notificati
 
     return $response;
   }
+
   /**
    * {@inheritdoc}
    */

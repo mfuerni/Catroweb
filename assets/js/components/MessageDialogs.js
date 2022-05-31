@@ -17,7 +17,7 @@ export default class MessageDialogs {
   }
 
   static showErrorList (errors) {
-    if(errors == null) return;
+    if (errors == null) return
     if (!Array.isArray(errors)) {
       errors = Object.values(errors)
     }
@@ -48,5 +48,4 @@ export default class MessageDialogs {
       confirmButtonText: globalConfiguration.messages.okayButtonText
     })
   }
-
 }

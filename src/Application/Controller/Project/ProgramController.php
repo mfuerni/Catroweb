@@ -19,12 +19,9 @@ use App\Storage\ScreenshotRepository;
 use App\Translation\TranslationDelegate;
 use App\User\Notification\NotificationManager;
 use App\Utils\ElapsedTimeStringFormatter;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Exception;
-use ImagickException;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -32,7 +29,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -216,6 +212,7 @@ class ProgramController extends AbstractController
   /**
    * @deprecated Use new API
    * @see \App\Api\ProjectsApi::projectIdPut() Use this method instead.
+   *
    * @throws Exception
    */
   #[Route(path: '/editProjectName/{id}', name: 'edit_program_name', methods: ['PUT'])]
@@ -255,6 +252,7 @@ class ProgramController extends AbstractController
   /**
    * @deprecated Use new API
    * @see \App\Api\ProjectsApi::projectIdPut() Use this method instead.
+   *
    * @throws Exception
    */
   #[Route(path: '/editProjectDescription/{id}', name: 'edit_program_description', methods: ['PUT'])]
@@ -293,6 +291,7 @@ class ProgramController extends AbstractController
   /**
    * @deprecated Use new API
    * @see \App\Api\ProjectsApi::projectIdPut() Use this method instead.
+   *
    * @throws Exception
    */
   #[Route(path: '/editProjectCredits/{id}', name: 'edit_program_credits', methods: ['PUT'])]

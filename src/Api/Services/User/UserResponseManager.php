@@ -14,14 +14,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class UserResponseManager extends AbstractResponseManager
 {
-
   private CookieService $cookie_service;
 
   public function __construct(
-      TranslatorInterface  $translator,
-      SerializerInterface  $serializer,
+      TranslatorInterface $translator,
+      SerializerInterface $serializer,
       ResponseCacheManager $response_cache_manager,
-      CookieService        $cookie_service
+      CookieService $cookie_service
   ) {
     parent::__construct($translator, $serializer, $response_cache_manager);
     $this->cookie_service = $cookie_service;
@@ -30,7 +29,7 @@ final class UserResponseManager extends AbstractResponseManager
   public function createBasicUserDataResponse(User $user, ?string $attributes = null): BasicUserDataResponse
   {
     if (empty($attributes)) {
-      $attributes_list = ["id", "username"];
+      $attributes_list = ['id', 'username'];
     } else {
       $attributes_list = explode(',', $attributes);
     }
@@ -40,15 +39,16 @@ final class UserResponseManager extends AbstractResponseManager
 
   public function createExtendedUserDataResponse(User $user, ?string $attributes = null): ExtendedUserDataResponse
   {
-
     if (empty($attributes)) {
-      $attributes_list = ["id", "username", "email"];
+      $attributes_list = ['id', 'username', 'email'];
     } else {
       $attributes_list = explode(',', $attributes);
     }
 
     $data = $this->createBasicUserDataArray($user, $attributes_list);
-    if (in_array('email', $attributes_list)) $data['email'] = $user->getEmail();
+    if (in_array('email', $attributes_list, true)) {
+      $data['email'] = $user->getEmail();
+    }
 
     return new ExtendedUserDataResponse($data);
   }
@@ -56,14 +56,31 @@ final class UserResponseManager extends AbstractResponseManager
   private function createBasicUserDataArray(User $user, array $attributes_list): array
   {
     $data = [];
-    if (in_array('id', $attributes_list)) $data['id'] = $user->getId();
-    if (in_array('username', $attributes_list)) $data['username'] = $user->getUsername();
-    if (in_array('picture', $attributes_list)) $data['picture'] = $user->getAvatar();
-    if (in_array('about', $attributes_list)) $data['about'] = $user->getAbout();
-    if (in_array('currentlyWorkingOn', $attributes_list)) $data['currentlyWorkingOn'] = $user->getCurrentlyWorkingOn();
-    if (in_array('projects', $attributes_list)) $data['projects'] = $user->getPrograms()->count();
-    if (in_array('followers', $attributes_list)) $data['followers'] = $user->getFollowers()->count();
-    if (in_array('following', $attributes_list)) $data['following'] = $user->getFollowing()->count();
+    if (in_array('id', $attributes_list, true)) {
+      $data['id'] = $user->getId();
+    }
+    if (in_array('username', $attributes_list, true)) {
+      $data['username'] = $user->getUsername();
+    }
+    if (in_array('picture', $attributes_list, true)) {
+      $data['picture'] = $user->getAvatar();
+    }
+    if (in_array('about', $attributes_list, true)) {
+      $data['about'] = $user->getAbout();
+    }
+    if (in_array('currentlyWorkingOn', $attributes_list, true)) {
+      $data['currentlyWorkingOn'] = $user->getCurrentlyWorkingOn();
+    }
+    if (in_array('projects', $attributes_list, true)) {
+      $data['projects'] = $user->getPrograms()->count();
+    }
+    if (in_array('followers', $attributes_list, true)) {
+      $data['followers'] = $user->getFollowers()->count();
+    }
+    if (in_array('following', $attributes_list, true)) {
+      $data['following'] = $user->getFollowing()->count();
+    }
+
     return $data;
   }
 
@@ -91,8 +108,8 @@ final class UserResponseManager extends AbstractResponseManager
   public function addAuthenticationCookiesToHeader(string $token, string $refresh_token, array &$responseHeaders = null): void
   {
     $responseHeaders['Set-Cookie'] = [
-        $this->cookie_service->createBearerTokenCookie($token),
-        $this->cookie_service->createRefreshTokenCookie($refresh_token)
+      $this->cookie_service->createBearerTokenCookie($token),
+      $this->cookie_service->createRefreshTokenCookie($refresh_token),
     ];
   }
 }

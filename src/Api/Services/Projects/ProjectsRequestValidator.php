@@ -12,11 +12,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ProjectsRequestValidator extends AbstractRequestValidator
 {
-
-  public final const MIN_NAME_LENGTH = 1;
-  public final const MAX_NAME_LENGTH = 255;
-  public final const MAX_DESCRIPTION_LENGTH = 10_000;
-  public final const MAX_CREDITS_LENGTH = 3_000;
+  final public const MIN_NAME_LENGTH = 1;
+  final public const MAX_NAME_LENGTH = 255;
+  final public const MAX_DESCRIPTION_LENGTH = 10_000;
+  final public const MAX_CREDITS_LENGTH = 3_000;
 
   public function __construct(ValidatorInterface $validator, TranslatorInterface $translator, private readonly UserManager $user_manager)
   {
@@ -104,10 +103,10 @@ final class ProjectsRequestValidator extends AbstractRequestValidator
   {
     $KEY = 'screenshot';
 
-    if (preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $screenshot, $matches) === 1) {
+    if (1 === preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $screenshot, $matches)) {
       // $image_type = $matches[1];
-      $image_binary = base64_decode($matches[2]);
-      if ($image_binary === false) {
+      $image_binary = base64_decode($matches[2], true);
+      if (false === $image_binary) {
         $this->getValidationWrapper()->addError($this->__('api.project.screenshotInvalid', [], $locale), $KEY);
       } else {
         try {

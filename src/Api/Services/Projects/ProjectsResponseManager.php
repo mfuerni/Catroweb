@@ -45,14 +45,14 @@ final class ProjectsResponseManager extends AbstractResponseManager
   }
 
   /**
-   * @param mixed $program
+   * @param mixed   $program
    * @param ?string $attributes Comma-separated list of attributes to include into response
    *
    * @throws Exception
    */
   public function createProjectDataResponse($program, ?string $attributes): ProjectResponse
   {
-    if(empty($attributes)) {
+    if (empty($attributes)) {
       $attributes = 'id,name,author,views,downloads,flavor,uploaded_string,screenshot_large,screenshot_small,project_url';
     }
 
@@ -62,18 +62,40 @@ final class ProjectsResponseManager extends AbstractResponseManager
     $attributes_list = explode(',', $attributes);
     $data = [];
 
-    if (in_array('id', $attributes_list)) $data['id'] = $project->getId();
-    if (in_array('name', $attributes_list)) $data['name'] = $project->getName();
-    if (in_array('author', $attributes_list)) $data['author'] = $project->getUser()->getUserIdentifier();
-    if (in_array('description', $attributes_list)) $data['description'] = $project->getDescription();
-    if (in_array('version', $attributes_list)) $data['version'] = $project->getCatrobatVersionName();
-    if (in_array('views', $attributes_list)) $data['views'] = $project->getViews();
-    if (in_array('downloads', $attributes_list)) $data['downloads'] = $project->getDownloads();
-    if (in_array('reactions', $attributes_list)) $data['reactions'] = count($project->getLikes());
-    if (in_array('comments', $attributes_list)) $data['comments'] = count($project->getComments());
-    if (in_array('private', $attributes_list)) $data['private'] = $project->getPrivate();
-    if (in_array('flavor', $attributes_list)) $data['flavor'] = $project->getFlavor();
-    if (in_array('tags', $attributes_list)) {
+    if (in_array('id', $attributes_list, true)) {
+      $data['id'] = $project->getId();
+    }
+    if (in_array('name', $attributes_list, true)) {
+      $data['name'] = $project->getName();
+    }
+    if (in_array('author', $attributes_list, true)) {
+      $data['author'] = $project->getUser()->getUserIdentifier();
+    }
+    if (in_array('description', $attributes_list, true)) {
+      $data['description'] = $project->getDescription();
+    }
+    if (in_array('version', $attributes_list, true)) {
+      $data['version'] = $project->getCatrobatVersionName();
+    }
+    if (in_array('views', $attributes_list, true)) {
+      $data['views'] = $project->getViews();
+    }
+    if (in_array('downloads', $attributes_list, true)) {
+      $data['downloads'] = $project->getDownloads();
+    }
+    if (in_array('reactions', $attributes_list, true)) {
+      $data['reactions'] = count($project->getLikes());
+    }
+    if (in_array('comments', $attributes_list, true)) {
+      $data['comments'] = count($project->getComments());
+    }
+    if (in_array('private', $attributes_list, true)) {
+      $data['private'] = $project->getPrivate();
+    }
+    if (in_array('flavor', $attributes_list, true)) {
+      $data['flavor'] = $project->getFlavor();
+    }
+    if (in_array('tags', $attributes_list, true)) {
       $tags = [];
       $project_tags = $project->getTags();
       /** @var Tag $tag */
@@ -82,26 +104,39 @@ final class ProjectsResponseManager extends AbstractResponseManager
       }
       $data['tags'] = $tags;
     }
-    if (in_array('uploaded', $attributes_list)) $data['uploaded'] = $project->getUploadedAt()->getTimestamp();
-    if (in_array('uploaded_string', $attributes_list)) $data['uploaded_string'] = $this->time_formatter->getElapsedTime($project->getUploadedAt()->getTimestamp());
-    if (in_array('screenshot_large', $attributes_list)) $data['screenshot_large'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotLarge($project->getId());
-    if (in_array('screenshot_small', $attributes_list)) $data['screenshot_small'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotSmall($project->getId());
-    if (in_array('project_url', $attributes_list)) $data['project_url'] = ltrim($this->url_generator->generate(
+    if (in_array('uploaded', $attributes_list, true)) {
+      $data['uploaded'] = $project->getUploadedAt()->getTimestamp();
+    }
+    if (in_array('uploaded_string', $attributes_list, true)) {
+      $data['uploaded_string'] = $this->time_formatter->getElapsedTime($project->getUploadedAt()->getTimestamp());
+    }
+    if (in_array('screenshot_large', $attributes_list, true)) {
+      $data['screenshot_large'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotLarge($project->getId());
+    }
+    if (in_array('screenshot_small', $attributes_list, true)) {
+      $data['screenshot_small'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotSmall($project->getId());
+    }
+    if (in_array('project_url', $attributes_list, true)) {
+      $data['project_url'] = ltrim($this->url_generator->generate(
         'program',
         [
-            'theme' => $this->parameter_bag->get('umbrellaTheme'),
-            'id' => $project->getId(),
+          'theme' => $this->parameter_bag->get('umbrellaTheme'),
+          'id' => $project->getId(),
         ],
         UrlGeneratorInterface::ABSOLUTE_URL), '/'
     );
-    if (in_array('download_url', $attributes_list)) $data['download_url'] = ltrim($this->url_generator->generate(
+    }
+    if (in_array('download_url', $attributes_list, true)) {
+      $data['download_url'] = ltrim($this->url_generator->generate(
         'open_api_server_projects_projectidcatrobatget',
         [
-            'id' => $project->getId(),
+          'id' => $project->getId(),
         ],
         UrlGeneratorInterface::ABSOLUTE_URL), '/');
-    if (in_array('filesize', $attributes_list)) $data['filesize'] = ($project->getFilesize() / 1_048_576);
-
+    }
+    if (in_array('filesize', $attributes_list, true)) {
+      $data['filesize'] = ($project->getFilesize() / 1_048_576);
+    }
 
     return new ProjectResponse($data);
   }
@@ -122,34 +157,48 @@ final class ProjectsResponseManager extends AbstractResponseManager
   public function createFeaturedProjectResponse(FeaturedProgram $featured_project, ?string $attributes = null): FeaturedProjectResponse
   {
     if (empty($attributes)) {
-      $attributes_list = ["project_id", "name"];
+      $attributes_list = ['project_id', 'name'];
     } else {
       $attributes_list = explode(',', $attributes);
     }
 
     $data = [];
-    if (in_array('id', $attributes_list)) $data['id'] = $featured_project->getId();
-    if (in_array('project_id', $attributes_list)) $data['project_id'] = $featured_project->getProgram()->getId();
-    if (in_array('name', $attributes_list)) $data['name'] = $featured_project->getProgram()->getName();
-    if (in_array('author', $attributes_list)) $data['author'] = $featured_project->getProgram()->getUser()->getUserIdentifier();
-    if (in_array('featured_image', $attributes_list)) $data['featured_image'] = $this->image_repository->getAbsoluteWebPath($featured_project->getId(), $featured_project->getImageType(), true);
+    if (in_array('id', $attributes_list, true)) {
+      $data['id'] = $featured_project->getId();
+    }
+    if (in_array('project_id', $attributes_list, true)) {
+      $data['project_id'] = $featured_project->getProgram()->getId();
+    }
+    if (in_array('name', $attributes_list, true)) {
+      $data['name'] = $featured_project->getProgram()->getName();
+    }
+    if (in_array('author', $attributes_list, true)) {
+      $data['author'] = $featured_project->getProgram()->getUser()->getUserIdentifier();
+    }
+    if (in_array('featured_image', $attributes_list, true)) {
+      $data['featured_image'] = $this->image_repository->getAbsoluteWebPath($featured_project->getId(), $featured_project->getImageType(), true);
+    }
 
-    if (in_array('url', $attributes_list) || in_array('project_url', $attributes_list)) {
+    if (in_array('url', $attributes_list, true) || in_array('project_url', $attributes_list, true)) {
       $url = $featured_project->getUrl();
       $project_url = null;
       if (empty($url)) {
         $url = $project_url = ltrim($this->url_generator->generate(
             'program',
             [
-                'theme' => $this->parameter_bag->get('umbrellaTheme'),
-                'id' => $featured_project->getProgram()->getId(),
+              'theme' => $this->parameter_bag->get('umbrellaTheme'),
+              'id' => $featured_project->getProgram()->getId(),
             ],
             UrlGeneratorInterface::ABSOLUTE_URL), '/'
         );
       }
 
-      if (in_array('project_url', $attributes_list)) $data['project_url'] = $project_url;
-      if (in_array('url', $attributes_list)) $data['url'] = $url;
+      if (in_array('project_url', $attributes_list, true)) {
+        $data['project_url'] = $project_url;
+      }
+      if (in_array('url', $attributes_list, true)) {
+        $data['url'] = $url;
+      }
     }
 
     return new FeaturedProjectResponse($data);
@@ -246,16 +295,17 @@ final class ProjectsResponseManager extends AbstractResponseManager
 
   public function createUpdateFailureResponse(int $failure, string $locale): UpdateProjectFailureResponse
   {
-    if ($failure === ProjectsApiProcessor::SERVER_ERROR_SAVE_XML) {
+    if (ProjectsApiProcessor::SERVER_ERROR_SAVE_XML === $failure) {
       return new UpdateProjectFailureResponse([
-          'error' => $this->__('api.updateProject.xmlError', [], $locale)
+        'error' => $this->__('api.updateProject.xmlError', [], $locale),
       ]);
-    } elseif ($failure === ProjectsApiProcessor::SERVER_ERROR_SCREENSHOT) {
-      return new UpdateProjectFailureResponse([
-          'error' => $this->__('api.updateProject.screenshotError', [], $locale)
-      ]);
-    } else {
-      return new UpdateProjectFailureResponse();
     }
+    if (ProjectsApiProcessor::SERVER_ERROR_SCREENSHOT === $failure) {
+      return new UpdateProjectFailureResponse([
+        'error' => $this->__('api.updateProject.screenshotError', [], $locale),
+      ]);
+    }
+
+    return new UpdateProjectFailureResponse();
   }
 }

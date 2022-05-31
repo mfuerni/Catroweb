@@ -149,17 +149,17 @@ final class UserRequestValidator extends AbstractRequestValidator
   {
     $KEY = 'picture';
     $image_size = 300;
-    if (preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $picture_in, $matches) === 1) {
+    if (1 === preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $picture_in, $matches)) {
       // $image_type = $matches[1];
-      $image_binary = base64_decode($matches[2]);
-      if ($image_binary === false) {
+      $image_binary = base64_decode($matches[2], true);
+      if (false === $image_binary) {
         $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
       } else {
         try {
           $imagick = new \Imagick();
           $imagick->readImageBlob($image_binary);
           $imagick->cropThumbnailImage($image_size, $image_size);
-          $picture_out = 'data:' . $imagick->getImageMimeType() . ';base64,' . base64_encode($imagick->getImageBlob());
+          $picture_out = 'data:'.$imagick->getImageMimeType().';base64,'.base64_encode($imagick->getImageBlob());
         } catch (\ImagickException $e) {
           $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
         }

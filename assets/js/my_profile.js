@@ -1,4 +1,3 @@
-/* global globalConfiguration */
 /* global myProfileConfiguration */
 
 import $ from 'jquery'
