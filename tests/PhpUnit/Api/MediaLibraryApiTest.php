@@ -94,7 +94,7 @@ final class MediaLibraryApiTest extends DefaultTestCase
     $loader->method('searchMediaLibraryFiles')->willReturn([]);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->mediaFilesSearchGet('query', null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->mediaFilesSearchGet('query', null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
 
@@ -115,7 +115,7 @@ final class MediaLibraryApiTest extends DefaultTestCase
     $loader->method('getMediaPackageByName')->willReturn(null);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->mediaPackageNameGet('name', null, null, $response_code, $response_headers);
+    $response = $this->object->mediaPackageNameGet('name', null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_NOT_FOUND, $response_code);
     $this->assertNull($response);
@@ -137,7 +137,7 @@ final class MediaLibraryApiTest extends DefaultTestCase
     $loader->method('getMediaPackageByName')->willReturn($mediaPackage);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->mediaPackageNameGet('name', null, null, $response_code, $response_headers);
+    $response = $this->object->mediaPackageNameGet('name', null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
 
@@ -158,7 +158,7 @@ final class MediaLibraryApiTest extends DefaultTestCase
     $loader->method('getMediaPackageFileByID')->willReturn(null);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->mediaFileIdGet(1, $response_code, $response_headers);
+    $response = $this->object->mediaFileIdGet(1, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_NOT_FOUND, $response_code);
     $this->assertNull($response);
@@ -178,7 +178,7 @@ final class MediaLibraryApiTest extends DefaultTestCase
     $loader->method('getMediaPackageFileByID')->willReturn($this->createMock(MediaPackageFile::class));
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->mediaFileIdGet(1, $response_code, $response_headers);
+    $response = $this->object->mediaFileIdGet(1, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
 
@@ -199,7 +199,7 @@ final class MediaLibraryApiTest extends DefaultTestCase
     $loader->method('getMediaPackageFiles')->willReturn([]);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->mediaFilesGet(null, null, null, $response_code, $response_headers);
+    $response = $this->object->mediaFilesGet(null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);

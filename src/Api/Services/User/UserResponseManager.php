@@ -27,38 +27,51 @@ final class UserResponseManager extends AbstractResponseManager
     $this->cookie_service = $cookie_service;
   }
 
-  public function createBasicUserDataResponse(User $user): BasicUserDataResponse
+  public function createBasicUserDataResponse(User $user, ?string $attributes = null): BasicUserDataResponse
   {
-    return new BasicUserDataResponse([
-      'id' => $user->getId(),
-      'username' => $user->getUsername(),
-      'about' => $user->getAbout(),
-      'currentlyWorkingOn' => $user->getCurrentlyWorkingOn(),
-      'projects' => $user->getPrograms()->count(),
-      'followers' => $user->getFollowers()->count(),
-      'following' => $user->getFollowing()->count(),
-    ]);
+    if (empty($attributes)) {
+      $attributes_list = ["id", "username"];
+    } else {
+      $attributes_list = explode(',', $attributes);
+    }
+
+    return new BasicUserDataResponse($this->createBasicUserDataArray($user, $attributes_list));
   }
 
-  public function createExtendedUserDataResponse(User $user): ExtendedUserDataResponse
+  public function createExtendedUserDataResponse(User $user, ?string $attributes = null): ExtendedUserDataResponse
   {
-    return new ExtendedUserDataResponse([
-      'id' => $user->getId(),
-      'username' => $user->getUsername(),
-      'about' => $user->getAbout(),
-      'currentlyWorkingOn' => $user->getCurrentlyWorkingOn(),
-      'email' => $user->getEmail(),
-      'projects' => $user->getPrograms()->count(),
-      'followers' => $user->getFollowers()->count(),
-      'following' => $user->getFollowing()->count(),
-    ]);
+
+    if (empty($attributes)) {
+      $attributes_list = ["id", "username", "email"];
+    } else {
+      $attributes_list = explode(',', $attributes);
+    }
+
+    $data = $this->createBasicUserDataArray($user, $attributes_list);
+    if (in_array('email', $attributes_list)) $data['email'] = $user->getEmail();
+
+    return new ExtendedUserDataResponse($data);
   }
 
-  public function createUsersDataResponse(array $users): array
+  private function createBasicUserDataArray(User $user, array $attributes_list): array
+  {
+    $data = [];
+    if (in_array('id', $attributes_list)) $data['id'] = $user->getId();
+    if (in_array('username', $attributes_list)) $data['username'] = $user->getUsername();
+    if (in_array('picture', $attributes_list)) $data['picture'] = $user->getAvatar();
+    if (in_array('about', $attributes_list)) $data['about'] = $user->getAbout();
+    if (in_array('currentlyWorkingOn', $attributes_list)) $data['currentlyWorkingOn'] = $user->getCurrentlyWorkingOn();
+    if (in_array('projects', $attributes_list)) $data['projects'] = $user->getPrograms()->count();
+    if (in_array('followers', $attributes_list)) $data['followers'] = $user->getFollowers()->count();
+    if (in_array('following', $attributes_list)) $data['following'] = $user->getFollowing()->count();
+    return $data;
+  }
+
+  public function createUsersDataResponse(array $users, ?string $attributes = null): array
   {
     $users_data_response = [];
     foreach ($users as $user) {
-      $user_data = $this->createBasicUserDataResponse($user);
+      $user_data = $this->createBasicUserDataResponse($user, $attributes);
       $users_data_response[] = $user_data;
     }
 

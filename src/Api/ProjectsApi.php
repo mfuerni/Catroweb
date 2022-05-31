@@ -39,7 +39,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     }
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createProjectDataResponse($project);
+    $response = $this->facade->getResponseManager()->createProjectDataResponse($project, null);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 
@@ -98,7 +98,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    */
-  public function projectsFeaturedGet(string $platform = null, string $max_version = null, ?int $limit = 20, ?int $offset = 0, string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
+  public function projectsFeaturedGet(string $platform = null, string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -121,7 +121,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
    *
    * @throws Exception
    */
-  public function projectsGet(string $category, ?string $accept_language = null, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
+  public function projectsGet(string $category, ?string $accept_language = null, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -145,7 +145,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     $projects = $this->facade->getLoader()->getProjectsFromCategory($category, $max_version, $limit, $offset, $flavor, $user);
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createProjectsDataResponse($projects);
+    $response = $this->facade->getResponseManager()->createProjectsDataResponse($projects, $attributes);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
     $this->facade->getResponseManager()->cacheResponse($cache_id, $responseCode, $responseHeaders, $response);
@@ -156,7 +156,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    */
-  public function projectIdRecommendationsGet(string $id, string $category, ?string $accept_language = null, string $max_version = null, ?int $limit = 20, ?int $offset = 0, string $flavor = null, &$responseCode = null, array &$responseHeaders = null): ?array
+  public function projectIdRecommendationsGet(string $id, string $category, ?string $accept_language = null, string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, string $flavor = null, &$responseCode = null, array &$responseHeaders = null): ?array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -176,7 +176,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     );
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createProjectsDataResponse($recommended_projects);
+    $response = $this->facade->getResponseManager()->createProjectsDataResponse($recommended_projects, $attributes);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 
@@ -245,7 +245,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
    *
    * @throws Exception
    */
-  public function projectsSearchGet(string $query, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null)
+  public function projectsSearchGet(string $query, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null)
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -255,7 +255,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     $programs = $this->facade->getLoader()->searchProjects($query, $limit, $offset, $max_version, $flavor);
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createProjectsDataResponse($programs);
+    $response = $this->facade->getResponseManager()->createProjectsDataResponse($programs, $attributes);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 
@@ -308,7 +308,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
    *
    * @throws Exception
    */
-  public function projectsUserGet(?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $flavor = null, ?string $attributes = null, &$responseCode, array &$responseHeaders): ?array
+  public function projectsUserGet(?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, ?string $attributes = null, &$responseCode, array &$responseHeaders): ?array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -337,7 +337,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
    *
    * @throws Exception
    */
-  public function projectsUserIdGet(string $id, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): ?array
+  public function projectsUserIdGet(string $id, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): ?array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -353,7 +353,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     $projects = $this->facade->getLoader()->getUserPublicPrograms($id, $limit, $offset, $flavor, $max_version);
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createProjectsDataResponse($projects);
+    $response = $this->facade->getResponseManager()->createProjectsDataResponse($projects, $attributes);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 

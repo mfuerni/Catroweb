@@ -54,11 +54,10 @@ final class NotificationsApi extends AbstractApiController implements Notificati
 
     return $response;
   }
-
   /**
    * {@inheritdoc}
    */
-  public function notificationsGet(?string $accept_language = null, ?int $limit = 20, ?int $offset = 0, NotificationsType $type = null, &$responseCode = null, array &$responseHeaders = null)
+  public function notificationsGet(?string $accept_language = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, NotificationsType $type = null, &$responseCode = null, array &$responseHeaders = null)
   {
     $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
     $limit = $this->getDefaultLimitOnNull($limit);

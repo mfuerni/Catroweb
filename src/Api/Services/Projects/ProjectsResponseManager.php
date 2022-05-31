@@ -119,51 +119,58 @@ final class ProjectsResponseManager extends AbstractResponseManager
     return $response;
   }
 
-  public function createFeaturedProjectResponse(FeaturedProgram $featured_project): FeaturedProjectResponse
+  public function createFeaturedProjectResponse(FeaturedProgram $featured_project, ?string $attributes = null): FeaturedProjectResponse
   {
-    $url = $featured_project->getUrl();
-    $project_url = ltrim($this->url_generator->generate(
-        'program',
-        [
-          'theme' => $this->parameter_bag->get('umbrellaTheme'),
-          'id' => $featured_project->getProgram()->getId(),
-        ],
-        UrlGeneratorInterface::ABSOLUTE_URL), '/'
-      );
-
-    if (empty($url)) {
-      $url = $project_url;
+    if (empty($attributes)) {
+      $attributes_list = ["project_id", "name"];
     } else {
-      $project_url = null;
+      $attributes_list = explode(',', $attributes);
     }
 
-    return new FeaturedProjectResponse([
-      'id' => $featured_project->getId(),
-      'project_id' => $featured_project->getProgram()->getId(),
-      'project_url' => $project_url,
-      'url' => $url,
-      'name' => $featured_project->getProgram()->getName(),
-      'author' => $featured_project->getProgram()->getUser()->getUserIdentifier(),
-      'featured_image' => $this->image_repository->getAbsoluteWebPath($featured_project->getId(), $featured_project->getImageType(), true),
-    ]);
+    $data = [];
+    if (in_array('id', $attributes_list)) $data['id'] = $featured_project->getId();
+    if (in_array('project_id', $attributes_list)) $data['project_id'] = $featured_project->getProgram()->getId();
+    if (in_array('name', $attributes_list)) $data['name'] = $featured_project->getProgram()->getName();
+    if (in_array('author', $attributes_list)) $data['author'] = $featured_project->getProgram()->getUser()->getUserIdentifier();
+    if (in_array('featured_image', $attributes_list)) $data['featured_image'] = $this->image_repository->getAbsoluteWebPath($featured_project->getId(), $featured_project->getImageType(), true);
+
+    if (in_array('url', $attributes_list) || in_array('project_url', $attributes_list)) {
+      $url = $featured_project->getUrl();
+      $project_url = null;
+      if (empty($url)) {
+        $url = $project_url = ltrim($this->url_generator->generate(
+            'program',
+            [
+                'theme' => $this->parameter_bag->get('umbrellaTheme'),
+                'id' => $featured_project->getProgram()->getId(),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL), '/'
+        );
+      }
+
+      if (in_array('project_url', $attributes_list)) $data['project_url'] = $project_url;
+      if (in_array('url', $attributes_list)) $data['url'] = $url;
+    }
+
+    return new FeaturedProjectResponse($data);
   }
 
-  public function createFeaturedProjectsResponse(array $featured_projects): array
+  public function createFeaturedProjectsResponse(array $featured_projects, ?string $attributes = null): array
   {
     $response = [];
 
     /** @var FeaturedProgram $featured_project */
     foreach ($featured_projects as $featured_project) {
-      $response[] = $this->createFeaturedProjectResponse($featured_project);
+      $response[] = $this->createFeaturedProjectResponse($featured_project, $attributes);
     }
 
     return $response;
   }
 
-  public function createProjectCategoryResponse(array $projects, string $category, string $locale): ProjectsCategory
+  public function createProjectCategoryResponse(array $projects, string $category, string $locale, ?string $attributes = null): ProjectsCategory
   {
     return new ProjectsCategory([
-      'projects_list' => $this->createProjectsDataResponse($projects),
+      'projects_list' => $this->createProjectsDataResponse($projects, $attributes),
       'type' => $category,
       'name' => $this->__('category.'.$category, [], $locale),
     ]);

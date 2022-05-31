@@ -78,7 +78,7 @@ final class UserApi extends AbstractApiController implements UserApiInterface
   {
     $responseCode = Response::HTTP_OK;
     $response = $this->facade->getResponseManager()->createExtendedUserDataResponse(
-      $this->facade->getAuthenticationManager()->getAuthenticatedUser()
+      $this->facade->getAuthenticationManager()->getAuthenticatedUser(), null
     );
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
@@ -100,7 +100,7 @@ final class UserApi extends AbstractApiController implements UserApiInterface
     }
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createBasicUserDataResponse($user);
+    $response = $this->facade->getResponseManager()->createBasicUserDataResponse($user, null);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 
@@ -146,7 +146,7 @@ final class UserApi extends AbstractApiController implements UserApiInterface
   /**
    * {@inheritdoc}
    */
-  public function usersSearchGet(string $query, ?int $limit = 20, ?int $offset = 0, &$responseCode = null, array &$responseHeaders = null): array
+  public function usersSearchGet(string $query, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $limit = $this->getDefaultLimitOnNull($limit);
     $offset = $this->getDefaultOffsetOnNull($offset);
@@ -154,7 +154,7 @@ final class UserApi extends AbstractApiController implements UserApiInterface
     $users = $this->facade->getLoader()->searchUsers($query, $limit, $offset);
 
     $responseCode = Response::HTTP_OK;
-    $response = $this->facade->getResponseManager()->createUsersDataResponse($users);
+    $response = $this->facade->getResponseManager()->createUsersDataResponse($users, $attributes);
     $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $response);
     $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
 

@@ -144,7 +144,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $loader->method('getFeaturedProjects')->willReturn([]);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->projectsFeaturedGet(null, null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsFeaturedGet(null, null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);
@@ -162,7 +162,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $response_code = null;
     $response_headers = [];
 
-    $response = $this->object->projectsGet('category', null, null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsGet('category', null, null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);
@@ -180,7 +180,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $response_code = null;
     $response_headers = [];
 
-    $response = $this->object->projectIdRecommendationsGet('id', 'category', null, null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectIdRecommendationsGet('id', 'category', null, null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_NOT_FOUND, $response_code);
     $this->assertNull($response);
@@ -203,7 +203,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $loader->method('getRecommendedProjects')->willReturn([]);
     $this->facade->method('getLoader')->willReturn($loader);
 
-    $response = $this->object->projectIdRecommendationsGet('id', 'category', null, null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectIdRecommendationsGet('id', 'category', null, null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);
@@ -221,7 +221,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $response_code = null;
     $response_headers = [];
 
-    $response = $this->object->projectsSearchGet('query', null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsSearchGet('query', null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);
@@ -261,7 +261,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $authentication_manager->method('getAuthenticatedUser')->willReturn(null);
     $this->facade->method('getAuthenticationManager')->willReturn($authentication_manager);
 
-    $response = $this->object->projectsUserGet(null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsUserGet(null, 20, 0, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_FORBIDDEN, $response_code);
     $this->assertNull($response);
@@ -285,7 +285,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $authentication_manager->method('getAuthenticatedUser')->willReturn($user);
     $this->facade->method('getAuthenticationManager')->willReturn($authentication_manager);
 
-    $response = $this->object->projectsUserGet(null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsUserGet(null, 20, 0, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);
@@ -307,7 +307,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $request_validator->method('validateUserExists')->willReturn(true);
     $this->facade->method('getRequestValidator')->willReturn($request_validator);
 
-    $response = $this->object->projectsUserIdGet('id', null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsUserIdGet('id', null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);
@@ -329,7 +329,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $request_validator->method('validateUserExists')->willReturn(false);
     $this->facade->method('getRequestValidator')->willReturn($request_validator);
 
-    $response = $this->object->projectsUserIdGet('id', null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsUserIdGet('id', null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_NOT_FOUND, $response_code);
     $this->assertNull($response);

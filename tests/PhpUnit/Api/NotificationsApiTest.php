@@ -123,7 +123,7 @@ class NotificationsApiTest extends DefaultTestCase
     $response_code = null;
     $response_headers = [];
 
-    $response = $this->object->notificationsGet(null, null, null, null, $response_code, $response_headers);
+    $response = $this->object->notificationsGet(null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_NOT_IMPLEMENTED, $response_code);
     $this->assertNull($response);
