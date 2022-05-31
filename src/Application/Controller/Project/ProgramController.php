@@ -218,36 +218,6 @@ class ProgramController extends AbstractController
    * @see \App\Api\ProjectsApi::projectIdPut() Use this method instead.
    * @throws Exception
    */
-  #[Route(path: '/userToggleProjectVisibility/{id}', name: 'profile_toggle_program_visibility', defaults: ['id' => 0], methods: ['GET'])]
-  public function toggleProgramVisibilityAction(string $id): Response
-  {
-    /** @var User|null $user */
-    $user = $this->getUser();
-    if (null === $user) {
-      return $this->redirectToRoute('login');
-    }
-    /** @var ArrayCollection $user_programs */
-    $user_programs = $user->getPrograms();
-    $programs = $user_programs->matching(
-        Criteria::create()->where(Criteria::expr()->eq('id', $id))
-      );
-    if ($programs->isEmpty()) {
-      throw $this->createNotFoundException('Unable to find Project entity.');
-    }
-    /** @var Program $program */
-    $program = $programs[0];
-    $program->setPrivate(!$program->getPrivate());
-    $this->entity_manager->persist($program);
-    $this->entity_manager->flush();
-
-    return new Response('true');
-  }
-
-  /**
-   * @deprecated Use new API
-   * @see \App\Api\ProjectsApi::projectIdPut() Use this method instead.
-   * @throws Exception
-   */
   #[Route(path: '/editProjectName/{id}', name: 'edit_program_name', methods: ['PUT'])]
   public function editProgramName(Request $request, string $id): Response
   {

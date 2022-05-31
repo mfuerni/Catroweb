@@ -168,11 +168,7 @@
       }
     },
     messages: {
-      errorTitle: '{{ 'error'|trans({}, 'catroweb') }}',
-      successTitle: '{{ 'success.text'|trans({}, 'catroweb') }}',
-      okayButtonText: '{{ 'ok'|trans({}, 'catroweb') }}',
       unspecifiedErrorText: '{{ 'myprofile.unspecifiedError'|trans({}, 'catroweb')}}',
-      authenticationErrorText: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim}}',
       deleteProjectNotFoundText: '{{ 'programs.deleteNotFoundError'|trans({}, 'catroweb')}}',
       security: {
         passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb') }}'
@@ -182,6 +178,12 @@
     },
     statusCodes: {
       ok: '{{ constant('Symfony\\Component\\HttpFoundation\\Response::HTTP_OK') }}'
+    }
+  }
+  const projectConfiguration = { {# needed in OwnProjectList::_actionToggleVisibility #}
+    messages: {
+      forbidden: '{{ 'api.updateProject.forbidden'|trans({}, 'catroweb') }}',
+      notFound: '{{ 'api.updateProject.notFound'|trans({}, 'catroweb') }}',
     }
   }
 </script>

@@ -1,15 +1,16 @@
+/* global globalConfiguration */
 /* global myProfileConfiguration */
 
-import $ from 'jquery'
 import { Corner, MDCMenu } from '@material/menu'
 import { MDCMenuSurfaceFoundation } from '@material/menu-surface'
 import Swal from 'sweetalert2'
-import { getCookie } from '../security/CookieHelper'
+import { ApiDeleteFetch, ApiFetch } from '../api/ApiHelper'
+import ProjectApi from '../api/ProjectApi'
 
 require('../../styles/components/own_project_list.scss')
 
 export class OwnProjectList {
-  constructor (container, apiUrl, theme, emptyMessage = '', showErrorMessage) {
+  constructor (container, apiUrl, theme, emptyMessage = '') {
     this.container = container
     this.projectsContainer = container.getElementsByClassName('projects-container')[0]
     this.apiUrl = apiUrl
@@ -23,7 +24,6 @@ export class OwnProjectList {
     this.projectActionMenu = undefined
     this.actionConfiguration = myProfileConfiguration.projectActions
     this.projectInfoConfiguration = myProfileConfiguration.projectInfo
-    this.showErrorMessage = showErrorMessage
   }
 
   initialize () {
@@ -62,20 +62,16 @@ export class OwnProjectList {
     this.fetchActive = true
     const self = this
 
-    if (!this.apiUrl.includes('?')) {
-      this.apiUrl += '?'
+    let url = this.apiUrl
+    if (!url.includes('?')) {
+      url += '?'
     } else {
-      this.apiUrl += '&'
+      url += '&'
     }
+    url += 'limit=' + this.projectFetchCount + '&offset=' + this.projectsLoaded +
+      '&attributes=id,project_url,screenshot_small,screenshot_large,name,downloads,views,reactions,comments,private'
 
-    $.ajax({
-      url: this.apiUrl + 'limit=' + this.projectFetchCount + '&offset=' + this.projectsLoaded +
-        '&attributes=id,project_url,screenshot_small,screenshot_large,name,downloads,views,reactions,comments,private',
-      dataType: 'json',
-      headers: {
-        Authorization: 'Bearer ' + getCookie('BEARER')
-      },
-      success: function (data) {
+    new ApiFetch(url, 'GET', undefined, 'json').run().then(function (data) {
         if (!Array.isArray(data)) {
           console.error('Data received for own projects is no array!')
           self.container.classList.remove('loading')
@@ -112,8 +108,8 @@ export class OwnProjectList {
 
         self.fetchActive = false
       }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      console.error('Failed loading own projects', JSON.stringify(jqXHR), textStatus, errorThrown)
+    ).catch(function (reason) {
+      console.error('Failed loading own projects', JSON.stringify(reason.data), reason.status, JSON.stringify(reason.response))
       self.container.classList.remove('loading')
     })
   }
@@ -250,38 +246,13 @@ export class OwnProjectList {
       cancelButtonText: msgParts[4]
     }).then((result) => {
       if (result.value) {
-        window.fetch('/api/project/' + id, {
-          method: 'DELETE',
-          headers: new window.Headers({
-            Authorization: 'Bearer ' + getCookie('BEARER')
-          })
-        }).then(response => {
-          switch (response.status) {
-            case 204:
-              // success
-              console.info('Project ' + id + ' deleted successfully.')
-              window.location.reload()
-              break
-            case 401:
-              // Invalid credentials
-              console.error('Delete Project ERROR 401: Invalid credentials', response)
-              this.showErrorMessage(myProfileConfiguration.messages.authenticationErrorText)
-              break
-            case 404:
-              console.error('Project to delete not found', response)
-              this.showErrorMessage(myProfileConfiguration.messages.deleteProjectNotFoundText)
-              break
-            case 400:
-            case 406:
-            default:
-              console.error('Delete Project ERROR', response)
-              this.showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
-              break
-          }
-        }).catch(reason => {
-          console.error('Delete Project FAILURE', reason)
-          this.showErrorMessage(myProfileConfiguration.messages.unspecifiedErrorText)
-        })
+        new ApiDeleteFetch('/api/project/' + id, 'Delete Project',
+          myProfileConfiguration.messages.unspecifiedErrorText, function () {
+            console.info('Project ' + id + ' deleted successfully.')
+            window.location.reload()
+          }, {
+            404: myProfileConfiguration.messages.deleteProjectNotFoundText,
+          }).run()
       }
     })
   }
@@ -309,43 +280,19 @@ export class OwnProjectList {
       if (result.value) {
         const projectElem = document.querySelector('.own-project-list__project[data-id="' + id + '"]')
         self._addLoadingSpinner(projectElem)
-        // TODO: define and implement new API endpoint for updating projects
-        $.get(configuration.url + '/' + id, {}, function (data) {
-          if (data === 'true') {
-            const visibilityElem = projectElem.querySelector('.own-project-list__project__details__visibility')
-            if (project.private) {
-              project.private = false
-              visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock_open'
-              visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPublicText
-            } else {
-              project.private = true
-              visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock'
-              visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPrivateText
-            }
+        const newValue = !project.private
+        ProjectApi.update(id, { private: newValue }, function () {
+          const visibilityElem = projectElem.querySelector('.own-project-list__project__details__visibility')
+          if (!newValue) {
+            project.private = false
+            visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock_open'
+            visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPublicText
           } else {
-            // TODO: can this be the case? Is the error message (language version too high) still reasonable?
-            Swal.fire({
-              title: configuration.errorTitle,
-              text: configuration.errorMessage,
-              icon: 'error',
-              customClass: {
-                confirmButton: 'btn btn-primary'
-              },
-              buttonsStyling: false,
-              allowOutsideClick: false
-            })
+            project.private = true
+            visibilityElem.querySelector('.own-project-list__project__details__visibility__icon').innerText = 'lock'
+            visibilityElem.querySelector('.own-project-list__project__details__visibility__text').innerText = self.projectInfoConfiguration.visibilityPrivateText
           }
-        }).fail(function () {
-          Swal.fire({
-            title: configuration.errorTitle,
-            icon: 'error',
-            customClass: {
-              confirmButton: 'btn btn-primary'
-            },
-            buttonsStyling: false,
-            allowOutsideClick: false
-          })
-        }).always(function () {
+        }, function () {
           self._removeLoadingSpinner(projectElem)
         })
       }

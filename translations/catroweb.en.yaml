@@ -486,6 +486,7 @@ format:
 
 #api
 errors:
+  unspecified: An unspecified error occurred. Please contact us.
   username:
     blank: Username must not be blank
     invalid: Your username is invalid
