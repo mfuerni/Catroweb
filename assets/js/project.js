@@ -1,10 +1,11 @@
+/* global projectConfiguration */
+
 import { MDCTextField } from '@material/textfield'
 import $ from 'jquery'
 import './components/fullscreen_list_modal'
 import { TranslateProgram } from './custom/TranslateProgram'
 import { TranslateComments } from './custom/TranslateComments'
 import { ProjectList } from './components/project_list'
-import { setImageUploadListener } from './custom/ImageUpload'
 import { Program } from './custom/Program'
 import { shareLink } from './custom/ShareLink'
 import { ProgramDescription } from './custom/ProgramDescription'
@@ -15,6 +16,7 @@ import { ProjectEditorNavigation } from './components/ProjectEditorNavigation'
 import { ProjectEditor } from './components/ProjectEditor'
 import { ProjectEditorTextField } from './components/ProjectEditorTextField'
 import { ProgramName } from './custom/ProgramName'
+import ProjectApi from './api/ProjectApi'
 import { ProjectEditorTextFieldModel } from './components/ProjectEditorTextFieldModel'
 import { ProjectEditorModel } from './components/ProjectEditorModel'
 
@@ -154,7 +156,45 @@ ProgramCredits(
   new CustomTranslationApi('credit')
 )
 
-setImageUploadListener($project.data('path-change-image'), '#change-project-thumbnail-button', '#project-thumbnail-big')
+initProjectScreenshotUpload()
+
+function initProjectScreenshotUpload () {
+  document.getElementById('change-project-thumbnail-button').addEventListener('click', function () {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.onchange = () => {
+      document.getElementById('upload-image-spinner').classList.remove('d-none')
+
+      const reader = new window.FileReader()
+      reader.onerror = () => {
+        document.getElementById('upload-image-spinner').classList.add('d-none')
+        showErrorMessage(projectConfiguration.messages.screenshotInvalid)
+      }
+      reader.onload = event => {
+        const image = event.currentTarget.result // base64 data url
+        ProjectApi.update($project.data('project-id'), {screenshot: image}, function () {
+          const imageElement = document.getElementById('project-thumbnail-big')
+          if (imageElement.src.includes('?')) {
+            imageElement.src += '&x=' + new Date().getTime()
+          } else {
+            imageElement.src += '?x=' + new Date().getTime()
+          }
+          document.querySelector('.text-img-upload-success').classList.remove('d-none')
+          setTimeout(function () {
+            document.querySelector('.text-img-upload-success').classList.add('d-none')
+          }, 3000)
+
+        }, function () {
+          document.getElementById('upload-image-spinner').classList.add('d-none')
+        })
+      }
+      reader.readAsDataURL(input.files[0])
+    }
+    input.click()
+  })
+
+}
 
 initProjects()
 

@@ -329,30 +329,6 @@ class ProgramController extends AbstractController
   }
 
   /**
-   * @deprecated Use new API
-   * @see \App\Api\ProjectsApi::projectIdPut() Use this method instead.
-   * @throws ImagickException
-   */
-  #[Route(path: '/project/{id}/image', name: 'upload_project_thumbnail', methods: ['POST'])]
-  public function uploadProjectImage(Request $request, string $id): Response
-  {
-    /** @var User|null $user */
-    $user = $this->getUser();
-    /** @var Program|null $project */
-    $project = $this->program_manager->find($id);
-    if (null === $project) {
-      throw new NotFoundHttpException();
-    }
-    if (null === $user || $project->getUser() !== $user) {
-      return $this->redirectToRoute('login');
-    }
-    $image = (string) $request->request->get('image');
-    $this->screenshot_repository->updateProgramAssets($image, $id);
-
-    return new JsonResponse();
-  }
-
-  /**
    * @throws NoResultException
    */
   #[Route(path: '/translate/project/{id}', name: 'translate_project', methods: ['GET'])]
