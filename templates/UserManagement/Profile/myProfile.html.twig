@@ -177,10 +177,12 @@
       ok: '{{ constant('Symfony\\Component\\HttpFoundation\\Response::HTTP_OK') }}'
     }
   }
-  const projectConfiguration = { {# needed in OwnProjectList::_actionToggleVisibility #}
-    messages: {
-      forbidden: '{{ 'api.updateProject.forbidden'|trans({}, 'catroweb') }}',
-      notFound: '{{ 'api.updateProject.notFound'|trans({}, 'catroweb') }}',
+  if(typeof projectConfiguration === 'undefined') {
+    const projectConfiguration = { {# needed in OwnProjectList::_actionToggleVisibility #}
+      messages: {
+        forbidden: '{{ 'api.updateProject.forbidden'|trans({}, 'catroweb') }}',
+        notFound: '{{ 'api.updateProject.notFound'|trans({}, 'catroweb') }}',
+      }
     }
   }
 </script>
