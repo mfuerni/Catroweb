@@ -504,12 +504,6 @@ services:
     arguments:
       $catrobat_mediapackage_path: '%catrobat.mediapackage.path%'
 
-  App\Application\Controller\Project\ProgramController:
-    arguments:
-      $max_name_upload_size: '%catrobat.max_name_upload_size%'
-      $max_description_upload_size: '%catrobat.max_description_upload_size%'
-      $max_notes_and_credits_upload_size: '%catrobat.max_notes_and_credits_upload_size%'
-
   # ====================================================================================================================
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ====================================================================================================================
