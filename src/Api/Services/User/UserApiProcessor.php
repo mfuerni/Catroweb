@@ -21,7 +21,6 @@ final class UserApiProcessor extends AbstractApiProcessor
    */
   public function registerUser(RegisterRequest $request): User
   {
-    /** @var User $user */
     $user = $this->user_manager->create();
     $user->setUsername($request->getUsername());
     $user->setEmail($request->getEmail());

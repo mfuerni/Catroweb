@@ -4,8 +4,8 @@ namespace App\Api;
 
 use App\Api\Services\Base\AbstractApiController;
 use App\Api\Services\MediaLibrary\MediaLibraryApiFacade;
-use App\DB\Entity\MediaLibrary\MediaPackage;
 use OpenAPI\Server\Api\MediaLibraryApiInterface;
+use OpenAPI\Server\Model\MediaFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class MediaLibraryApi extends AbstractApiController implements MediaLibraryApiInterface
@@ -17,7 +17,7 @@ final class MediaLibraryApi extends AbstractApiController implements MediaLibrar
   /**
    * {@inheritdoc}
    */
-  public function mediaFilesSearchGet(string $query, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, ?string $package_name = null, &$responseCode, array &$responseHeaders)
+  public function mediaFilesSearchGet(string $query, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, ?string $package_name = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $limit = $this->getDefaultLimitOnNull($limit);
     $offset = $this->getDefaultOffsetOnNull($offset);
@@ -51,7 +51,6 @@ final class MediaLibraryApi extends AbstractApiController implements MediaLibrar
     }
 
     $responseCode = Response::HTTP_OK;
-    /** @var MediaPackage $media_package */
     $response = $this->facade->getResponseManager()->createMediaPackageCategoriesResponse(
       $media_package->getCategories()->toArray(), $limit, $offset, $attributes
     );
@@ -64,7 +63,7 @@ final class MediaLibraryApi extends AbstractApiController implements MediaLibrar
   /**
    * {@inheritdoc}
    */
-  public function mediaFileIdGet(int $id, ?string $attributes = null, &$responseCode = null, array &$responseHeaders = null): ?\OpenAPI\Server\Model\MediaFileResponse
+  public function mediaFileIdGet(int $id, ?string $attributes = null, &$responseCode = null, array &$responseHeaders = null): ?MediaFileResponse
   {
     $media_package_file = $this->facade->getLoader()->getMediaPackageFileByID($id);
 
@@ -85,7 +84,7 @@ final class MediaLibraryApi extends AbstractApiController implements MediaLibrar
   /**
    * {@inheritdoc}
    */
-  public function mediaFilesGet(?int $limit = 20, ?int $offset = 0, string $flavor = null, ?string $attributes = null, &$responseCode = null, array &$responseHeaders = null)
+  public function mediaFilesGet(?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $limit = $this->getDefaultLimitOnNull($limit);
     $offset = $this->getDefaultOffsetOnNull($offset);

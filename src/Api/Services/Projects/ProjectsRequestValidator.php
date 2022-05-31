@@ -5,6 +5,8 @@ namespace App\Api\Services\Projects;
 use App\Api\Services\Base\AbstractRequestValidator;
 use App\Api\Services\ValidationWrapper;
 use App\User\UserManager;
+use Imagick;
+use ImagickException;
 use OpenAPI\Server\Model\UpdateProjectRequest;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -110,9 +112,9 @@ final class ProjectsRequestValidator extends AbstractRequestValidator
         $this->getValidationWrapper()->addError($this->__('api.project.screenshotInvalid', [], $locale), $KEY);
       } else {
         try {
-          $imagick = new \Imagick();
+          $imagick = new Imagick();
           $imagick->readImageBlob($image_binary);
-        } catch (\ImagickException $e) {
+        } catch (ImagickException) {
           $this->getValidationWrapper()->addError($this->__('api.project.screenshotInvalid', [], $locale), $KEY);
         }
       }

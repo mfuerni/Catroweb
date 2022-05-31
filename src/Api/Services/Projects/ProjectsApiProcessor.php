@@ -80,7 +80,7 @@ final class ProjectsApiProcessor extends AbstractApiProcessor
 
         try {
           $this->extracted_file_repository->saveProgramExtractedFile($extracted_file);
-        } catch (\Exception $e) {
+        } catch (Exception) {
           return self::SERVER_ERROR_SAVE_XML;
         }
         $this->file_repository->deleteProjectZipFileIfExists($project->getId());
@@ -95,7 +95,7 @@ final class ProjectsApiProcessor extends AbstractApiProcessor
     if (!is_null($request->getScreenshot())) {
       try {
         $this->screenshot_repository->updateProgramAssets($request->getScreenshot(), $project->getId());
-      } catch (\Exception $e) {
+      } catch (Exception) {
         if ($extracted_file) {
           // restore old values
           foreach ($extracted_file_properties_before_update as $key => $value) {
@@ -113,7 +113,7 @@ final class ProjectsApiProcessor extends AbstractApiProcessor
           }
           try {
             $extracted_file->saveProgramXmlProperties();
-          } catch (Exception $e) {
+          } catch (Exception) {
             // ignore
           }
         }

@@ -12,6 +12,7 @@ use App\DB\Entity\Project\Tag;
 use App\Project\ProgramManager;
 use App\Storage\ImageRepository;
 use App\Utils\ElapsedTimeStringFormatter;
+use DateTimeInterface;
 use Exception;
 use OpenAPI\Server\Model\FeaturedProjectResponse;
 use OpenAPI\Server\Model\ProjectResponse;
@@ -23,7 +24,6 @@ use OpenAPI\Server\Service\SerializerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,12 +45,9 @@ final class ProjectsResponseManager extends AbstractResponseManager
   }
 
   /**
-   * @param mixed   $program
    * @param ?string $attributes Comma-separated list of attributes to include into response
-   *
-   * @throws Exception
    */
-  public function createProjectDataResponse($program, ?string $attributes): ProjectResponse
+  public function createProjectDataResponse(Program $program, ?string $attributes): ProjectResponse
   {
     if (empty($attributes)) {
       $attributes = 'id,name,author,views,downloads,flavor,uploaded_string,screenshot_large,screenshot_small,project_url';
@@ -108,7 +105,11 @@ final class ProjectsResponseManager extends AbstractResponseManager
       $data['uploaded'] = $project->getUploadedAt()->getTimestamp();
     }
     if (in_array('uploaded_string', $attributes_list, true)) {
-      $data['uploaded_string'] = $this->time_formatter->getElapsedTime($project->getUploadedAt()->getTimestamp());
+      try {
+        $data['uploaded_string'] = $this->time_formatter->getElapsedTime($project->getUploadedAt()->getTimestamp());
+      } catch (Exception) {
+        $data['uploaded_string'] = $project->getUploadedAt()->format(DateTimeInterface::RFC2822);
+      }
     }
     if (in_array('screenshot_large', $attributes_list, true)) {
       $data['screenshot_large'] = $program->isExample() ? $this->image_repository->getAbsoluteWebPath($program->getId(), $program->getImageType(), false) : $this->project_manager->getScreenshotLarge($project->getId());
@@ -141,9 +142,6 @@ final class ProjectsResponseManager extends AbstractResponseManager
     return new ProjectResponse($data);
   }
 
-  /**
-   * @throws Exception
-   */
   public function createProjectsDataResponse(array $projects, ?string $attributes = null): array
   {
     $response = [];
@@ -233,7 +231,7 @@ final class ProjectsResponseManager extends AbstractResponseManager
         'theme' => $this->parameter_bag->get('umbrellaTheme'),
         'id' => $project->getId(),
       ],
-      UrlGenerator::ABSOLUTE_URL);
+      UrlGeneratorInterface::ABSOLUTE_URL);
   }
 
   public function createUploadErrorResponse(string $locale): UploadErrorResponse

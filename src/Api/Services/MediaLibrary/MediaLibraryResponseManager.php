@@ -10,7 +10,6 @@ use App\DB\EntityRepository\MediaLibrary\MediaPackageFileRepository;
 use OpenAPI\Server\Model\MediaFileResponse;
 use OpenAPI\Server\Service\SerializerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -76,7 +75,7 @@ final class MediaLibraryResponseManager extends AbstractResponseManager
             'theme' => $this->parameter_bag->get('umbrellaTheme'),
             'id' => $media_package_file->getId(),
           ],
-          UrlGenerator::ABSOLUTE_URL);
+          UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     if (in_array('size', $attributes_list, true)) {

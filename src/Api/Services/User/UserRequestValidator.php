@@ -6,6 +6,8 @@ use App\Api\Services\Base\AbstractRequestValidator;
 use App\Api\Services\ValidationWrapper;
 use App\DB\Entity\User\User;
 use App\User\UserManager;
+use Imagick;
+use ImagickException;
 use OpenAPI\Server\Model\RegisterRequest;
 use OpenAPI\Server\Model\ResetPasswordRequest;
 use OpenAPI\Server\Model\UpdateUserRequest;
@@ -156,11 +158,11 @@ final class UserRequestValidator extends AbstractRequestValidator
         $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
       } else {
         try {
-          $imagick = new \Imagick();
+          $imagick = new Imagick();
           $imagick->readImageBlob($image_binary);
           $imagick->cropThumbnailImage($image_size, $image_size);
           $picture_out = 'data:'.$imagick->getImageMimeType().';base64,'.base64_encode($imagick->getImageBlob());
-        } catch (\ImagickException $e) {
+        } catch (ImagickException) {
           $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
         }
       }

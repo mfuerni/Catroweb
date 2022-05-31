@@ -261,7 +261,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $authentication_manager->method('getAuthenticatedUser')->willReturn(null);
     $this->facade->method('getAuthenticationManager')->willReturn($authentication_manager);
 
-    $response = $this->object->projectsUserGet(null, 20, 0, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsUserGet(null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_FORBIDDEN, $response_code);
     $this->assertNull($response);
@@ -285,7 +285,7 @@ final class ProjectsApiTest extends DefaultTestCase
     $authentication_manager->method('getAuthenticatedUser')->willReturn($user);
     $this->facade->method('getAuthenticationManager')->willReturn($authentication_manager);
 
-    $response = $this->object->projectsUserGet(null, 20, 0, null, null, $response_code, $response_headers);
+    $response = $this->object->projectsUserGet(null, null, null, null, null, $response_code, $response_headers);
 
     $this->assertEquals(Response::HTTP_OK, $response_code);
     $this->assertIsArray($response);

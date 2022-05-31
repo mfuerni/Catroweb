@@ -7,7 +7,9 @@ use App\Api\Services\User\UserApiFacade;
 use App\User\ResetPassword\PasswordResetRequestedEvent;
 use Exception;
 use OpenAPI\Server\Api\UserApiInterface;
+use OpenAPI\Server\Model\BasicUserDataResponse;
 use OpenAPI\Server\Model\ExtendedUserDataResponse;
+use OpenAPI\Server\Model\JWTResponse;
 use OpenAPI\Server\Model\RegisterErrorResponse;
 use OpenAPI\Server\Model\RegisterRequest;
 use OpenAPI\Server\Model\ResetPasswordRequest;
@@ -26,7 +28,7 @@ final class UserApi extends AbstractApiController implements UserApiInterface
    *
    * @throws Exception
    */
-  public function userPost(RegisterRequest $register_request, string $accept_language = null, &$responseCode = null, array &$responseHeaders = null)
+  public function userPost(RegisterRequest $register_request, string $accept_language = null, &$responseCode = null, array &$responseHeaders = null): JWTResponse|RegisterErrorResponse|null
   {
     $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
 
@@ -89,7 +91,7 @@ final class UserApi extends AbstractApiController implements UserApiInterface
   /**
    * {@inheritdoc}
    */
-  public function userIdGet(string $id, &$responseCode, array &$responseHeaders): ?\OpenAPI\Server\Model\BasicUserDataResponse
+  public function userIdGet(string $id, &$responseCode, array &$responseHeaders): ?BasicUserDataResponse
   {
     $user = $this->facade->getLoader()->findUserByID($id);
 

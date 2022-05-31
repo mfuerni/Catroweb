@@ -12,6 +12,7 @@ use OpenAPI\Server\Api\ProjectsApiInterface;
 use OpenAPI\Server\Model\ProjectReportRequest;
 use OpenAPI\Server\Model\ProjectResponse;
 use OpenAPI\Server\Model\UpdateProjectErrorResponse;
+use OpenAPI\Server\Model\UpdateProjectFailureResponse;
 use OpenAPI\Server\Model\UpdateProjectRequest;
 use OpenAPI\Server\Model\UploadErrorResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -26,8 +27,6 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
 
   /**
    * {@inheritdoc}
-   *
-   * @throws Exception
    */
   public function projectIdGet(string $id, &$responseCode, array &$responseHeaders): ?ProjectResponse
   {
@@ -49,7 +48,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    */
-  public function projectIdPut(string $id, UpdateProjectRequest $update_project_request, string $accept_language = null, &$responseCode, array &$responseHeaders)
+  public function projectIdPut(string $id, UpdateProjectRequest $update_project_request, string $accept_language = null, &$responseCode = null, array &$responseHeaders = null): UpdateProjectFailureResponse|UpdateProjectErrorResponse|null
   {
     $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
 
@@ -123,7 +122,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    *
-   * @throws Exception
+   * @throws \JsonException
    */
   public function projectsGet(string $category, ?string $accept_language = null, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
   {
@@ -246,10 +245,8 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
 
   /**
    * {@inheritdoc}
-   *
-   * @throws Exception
    */
-  public function projectsSearchGet(string $query, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null)
+  public function projectsSearchGet(string $query, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -269,7 +266,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    *
-   * @throws Exception
+   * @throws \JsonException
    */
   public function projectsCategoriesGet(?string $max_version = null, ?string $flavor = null, ?string $accept_language = null, &$responseCode = null, array &$responseHeaders = null): array
   {
@@ -309,10 +306,8 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
 
   /**
    * {@inheritdoc}
-   *
-   * @throws Exception
    */
-  public function projectsUserGet(?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode, array &$responseHeaders): ?array
+  public function projectsUserGet(?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): ?array
   {
     $max_version = $this->getDefaultMaxVersionOnNull($max_version);
     $limit = $this->getDefaultLimitOnNull($limit);
@@ -338,8 +333,6 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
 
   /**
    * {@inheritdoc}
-   *
-   * @throws Exception
    */
   public function projectsUserIdGet(string $id, ?string $max_version = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, ?string $flavor = null, &$responseCode = null, array &$responseHeaders = null): ?array
   {
@@ -398,7 +391,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    */
-  public function projectsExtensionsGet(string $accept_language = null, &$responseCode = null, array &$responseHeaders = null)
+  public function projectsExtensionsGet(string $accept_language = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
     $locale = $this->facade->getResponseManager()->sanitizeLocale($accept_language);
@@ -416,7 +409,7 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
   /**
    * {@inheritdoc}
    */
-  public function projectsTagsGet(string $accept_language = null, &$responseCode = null, array &$responseHeaders = null)
+  public function projectsTagsGet(string $accept_language = null, &$responseCode = null, array &$responseHeaders = null): array
   {
     $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
     $locale = $this->facade->getResponseManager()->sanitizeLocale($accept_language);

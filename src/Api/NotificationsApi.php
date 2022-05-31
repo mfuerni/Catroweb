@@ -5,6 +5,7 @@ namespace App\Api;
 use App\Api\Services\Base\AbstractApiController;
 use App\Api\Services\Notifications\NotificationsApiFacade;
 use OpenAPI\Server\Api\NotificationsApiInterface;
+use OpenAPI\Server\Model\NotificationsCountResponse;
 use OpenAPI\Server\Model\NotificationsType;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,7 +38,7 @@ final class NotificationsApi extends AbstractApiController implements Notificati
   /**
    * {@inheritdoc}
    */
-  public function notificationsCountGet(&$responseCode = null, array &$responseHeaders = null)
+  public function notificationsCountGet(&$responseCode = null, array &$responseHeaders = null): ?NotificationsCountResponse
   {
     $user = $this->facade->getAuthenticationManager()->getAuthenticatedUser();
     if (is_null($user)) {
@@ -58,7 +59,7 @@ final class NotificationsApi extends AbstractApiController implements Notificati
   /**
    * {@inheritdoc}
    */
-  public function notificationsGet(?string $accept_language = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, NotificationsType $type = null, &$responseCode = null, array &$responseHeaders = null)
+  public function notificationsGet(?string $accept_language = null, ?int $limit = 20, ?int $offset = 0, ?string $attributes = null, NotificationsType $type = null, &$responseCode = null, array &$responseHeaders = null): ?array
   {
     $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
     $limit = $this->getDefaultLimitOnNull($limit);
