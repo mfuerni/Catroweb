@@ -11,6 +11,8 @@ use Exception;
 use OpenAPI\Server\Api\ProjectsApiInterface;
 use OpenAPI\Server\Model\ProjectReportRequest;
 use OpenAPI\Server\Model\ProjectResponse;
+use OpenAPI\Server\Model\UpdateProjectErrorResponse;
+use OpenAPI\Server\Model\UpdateProjectRequest;
 use OpenAPI\Server\Model\UploadErrorResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -44,6 +46,55 @@ final class ProjectsApi extends AbstractApiController implements ProjectsApiInte
     return $response;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function projectIdPut(string $id, UpdateProjectRequest $update_project_request, string $accept_language = null, &$responseCode, array &$responseHeaders)
+  {
+    $accept_language = $this->getDefaultAcceptLanguageOnNull($accept_language);
+
+    $project = $this->facade->getLoader()->findProjectByID($id, true);
+    if (is_null($project)) {
+      $responseCode = Response::HTTP_NOT_FOUND;
+      return null;
+    }
+
+    $user = $this->facade->getAuthenticationManager()->getAuthenticatedUser();
+    if (is_null($user)) {
+      $responseCode = Response::HTTP_UNAUTHORIZED;
+      return null;
+    }
+
+    if (!is_null($project->getUser()) && $project->getUser() !== $user) {
+      // project needs to be owned by the logged-in user
+      $responseCode = Response::HTTP_FORBIDDEN;
+      return null;
+    }
+
+    $validation_wrapper = $this->facade->getRequestValidator()->validateUpdateRequest($update_project_request, $accept_language);
+
+    if ($validation_wrapper->hasError()) {
+      $responseCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+      $error_response = new UpdateProjectErrorResponse($validation_wrapper->getErrors());
+      $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $error_response);
+      $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
+
+      return $error_response;
+    }
+
+    $result = $this->facade->getProcessor()->updateProject($project, $update_project_request);
+    if ($result === true) {
+      $responseCode = Response::HTTP_NO_CONTENT;
+      return null;
+    } else {
+      $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+      $error_response =  $this->facade->getResponseManager()->createUpdateFailureResponse($result, $accept_language);
+      $this->facade->getResponseManager()->addResponseHashToHeaders($responseHeaders, $error_response);
+      $this->facade->getResponseManager()->addContentLanguageToHeaders($responseHeaders);
+
+      return $error_response;
+    }
+  }
   /**
    * {@inheritdoc}
    */

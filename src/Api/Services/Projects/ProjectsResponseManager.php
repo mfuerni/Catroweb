@@ -17,6 +17,7 @@ use OpenAPI\Server\Model\FeaturedProjectResponse;
 use OpenAPI\Server\Model\ProjectResponse;
 use OpenAPI\Server\Model\ProjectsCategory;
 use OpenAPI\Server\Model\TagResponse;
+use OpenAPI\Server\Model\UpdateProjectFailureResponse;
 use OpenAPI\Server\Model\UploadErrorResponse;
 use OpenAPI\Server\Service\SerializerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -234,5 +235,20 @@ final class ProjectsResponseManager extends AbstractResponseManager
     );
 
     return $response;
+  }
+
+  public function createUpdateFailureResponse(int $failure, string $locale): UpdateProjectFailureResponse
+  {
+    if ($failure === ProjectsApiProcessor::SERVER_ERROR_SAVE_XML) {
+      return new UpdateProjectFailureResponse([
+          'error' => $this->__('api.updateProject.xmlError', [], $locale)
+      ]);
+    } elseif ($failure === ProjectsApiProcessor::SERVER_ERROR_SCREENSHOT) {
+      return new UpdateProjectFailureResponse([
+          'error' => $this->__('api.updateProject.screenshotError', [], $locale)
+      ]);
+    } else {
+      return new UpdateProjectFailureResponse();
+    }
   }
 }
