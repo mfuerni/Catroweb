@@ -55,7 +55,7 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user?limit=2"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name       |
       | project 26 |
@@ -66,7 +66,7 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user/?limit=1&offset=0"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name       |
       | project 26 |
@@ -76,7 +76,7 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user/?limit=1&offset=1"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 5 |
@@ -86,7 +86,7 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user/?offset=1"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then I should get the json object:
       """
       []
@@ -97,7 +97,7 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user/?max_version=0.984"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 2 |
@@ -107,7 +107,7 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user/?flavor=luna"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name       |
       | project 26 |
@@ -117,6 +117,6 @@ Feature: Logged in user projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/user/"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain 20 projects
 

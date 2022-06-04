@@ -22,7 +22,7 @@ Feature: Get recent projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/?category=recent"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 5 |
@@ -37,7 +37,7 @@ Feature: Get recent projects
     And I have a request header "HTTP_ACCEPT_LANGUAGE" with value "de_DE"
     And I request "GET" "/api/projects/?category=recent&limit=1"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 5 |
@@ -47,7 +47,7 @@ Feature: Get recent projects
     And I have a request header "HTTP_ACCEPT_LANGUAGE" with value "en"
     And I request "GET" "/api/projects/?category=recent&offset=1"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 4 |
@@ -61,7 +61,7 @@ Feature: Get recent projects
     And I have a request header "HTTP_ACCEPT_LANGUAGE" with value "fr_FR"
     And I request "GET" "/api/projects/?category=recent&max_version=0.982"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 3 |
@@ -70,7 +70,7 @@ Feature: Get recent projects
     And I have a request header "HTTP_ACCEPT" with value "application/json"
     And I request "GET" "/api/projects/?category=recent&flavor=luna"
     Then the response status code should be "200"
-    Then the response should have the projects model structure
+    Then the response should have the default projects model structure
     Then the response should contain projects in the following order:
       | Name      |
       | project 4 |
