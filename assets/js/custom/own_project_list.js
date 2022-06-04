@@ -12,7 +12,8 @@ export class OwnProjectList {
   constructor (container, apiUrl, theme, emptyMessage = '') {
     this.container = container
     this.projectsContainer = container.getElementsByClassName('projects-container')[0]
-    this.apiUrl = apiUrl
+    const attributes = 'attributes=id,project_url,screenshot_small,screenshot_large,name,downloads,views,reactions,comments,private'
+    this.apiUrl = apiUrl.includes('?') ? (apiUrl + '&' + attributes) : (apiUrl + '?' + attributes)
     this.projectsLoaded = 0
     this.projectsData = {}
     this.projectFetchCount = 99999
@@ -61,14 +62,7 @@ export class OwnProjectList {
     this.fetchActive = true
     const self = this
 
-    let url = this.apiUrl
-    if (!url.includes('?')) {
-      url += '?'
-    } else {
-      url += '&'
-    }
-    url += 'limit=' + this.projectFetchCount + '&offset=' + this.projectsLoaded +
-      '&attributes=id,project_url,screenshot_small,screenshot_large,name,downloads,views,reactions,comments,private'
+    const url = this.apiUrl + '&limit=' + this.projectFetchCount + '&offset=' + this.projectsLoaded
 
     new ApiFetch(url, 'GET', undefined, 'json').run().then(function (data) {
       if (!Array.isArray(data)) {

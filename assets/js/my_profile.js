@@ -30,10 +30,14 @@ $(() => {
   const url = baseUrl + '/api/projects/user'
 
   new OwnProjectList(projectsContainer, url, theme, emptyMessage).initialize()
-  new OwnProfile().initializeAll()
+  new OwnProfile(baseUrl).initializeAll()
 })
 
 class OwnProfile {
+  constructor (baseUrl) {
+    this.baseUrl = baseUrl
+  }
+
   initializeAll () {
     this.initProfilePictureChange()
     this.initSaveProfileSettings()
@@ -43,7 +47,7 @@ class OwnProfile {
 
   updateProfile (data, successCallback, finalCallback) {
     new ApiPutFetch(
-      '/api/user', data, 'Save Profile',
+      this.baseUrl + '/api/user', data, 'Save Profile',
       myProfileConfiguration.messages.unspecifiedErrorText, successCallback,
       undefined, finalCallback
     ).run()
@@ -140,7 +144,7 @@ class OwnProfile {
         cancelButtonText: msgParts[4]
       }).then((result) => {
         if (result.value) {
-          new ApiDeleteFetch('/api/user', 'Delete User',
+          new ApiDeleteFetch(this.baseUrl + '/api/user', 'Delete User',
             myProfileConfiguration.messages.unspecifiedErrorText, function () {
               deleteCookie('BEARER', routingDataset.baseUrl + '/')
               window.location.href = routingDataset.index
