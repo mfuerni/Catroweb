@@ -25,7 +25,8 @@
         okayButtonText: '{{ 'ok'|trans({}, 'catroweb') }}',
         authenticationErrorText: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim }}',
         unspecifiedErrorText: '{{ 'errors.unspecified'|trans({}, 'catroweb') }}',
-      }
+      },
+      environment: '{{ app.environment }}',
     }</script>
   {{ encore_entry_script_tags('base') }}
   {% block javascript %}{% endblock %}

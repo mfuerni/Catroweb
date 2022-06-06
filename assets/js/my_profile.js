@@ -1,3 +1,4 @@
+/* global globalConfiguration */
 /* global myProfileConfiguration */
 
 import $ from 'jquery'
@@ -55,36 +56,55 @@ class OwnProfile {
 
   initProfilePictureChange () {
     const self = this
-    Array.prototype.forEach.call(document.getElementsByClassName('profile__basic-info__avatar'), function (el) {
-      el.addEventListener('click', function () {
+    const avatarElements = document.getElementsByClassName('profile__basic-info__avatar')
+    if (avatarElements.length) {
+      this.avatarElement = avatarElements[0]
+      this.avatarElement.addEventListener('click', function () {
         const input = document.createElement('input')
         input.type = 'file'
         input.accept = 'image/*'
-        input.onchange = () => {
-          const loadingSpinner = document.getElementById('profile-loading-spinner-template').content.cloneNode(true)
-          el.appendChild(loadingSpinner)
-          const reader = new window.FileReader()
-          reader.onerror = () => {
-            if (loadingSpinner && loadingSpinner.parentElement === el) {
-              el.removeChild(loadingSpinner)
-            }
-            MessageDialogs.showErrorMessage(myProfileConfiguration.messages.profilePictureInvalid)
-          }
-          reader.onload = event => {
-            const image = event.currentTarget.result // base64 data url
-            self.updateProfile({ picture: image }, function () {
-              window.location.search = 'profilePictureChangeSuccess'
-            }, function () {
-              if (loadingSpinner && loadingSpinner.parentElement === el) {
-                el.removeChild(loadingSpinner)
-              }
-            })
-          }
-          reader.readAsDataURL(input.files[0])
-        }
+        self.addProfilePictureChangeListenerToInput(input)
         input.click()
       })
-    })
+
+      if (globalConfiguration.environment === 'test') {
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = 'image/*'
+        self.addProfilePictureChangeListenerToInput(input)
+        input.name = 'own-profile-picture-upload-field'
+        input.className = 'd-none'
+        this.avatarElement.appendChild(input)
+      }
+    }
+  }
+
+  addProfilePictureChangeListenerToInput (input) {
+    const self = this
+    input.onchange = () => {
+      const loadingSpinner = document.getElementById('profile-loading-spinner-template').content.cloneNode(true)
+      if (this.avatarElement) {
+        this.avatarElement.appendChild(loadingSpinner)
+      }
+      const reader = new window.FileReader()
+      reader.onerror = () => {
+        if (loadingSpinner && self.avatarElement && loadingSpinner.parentElement === this.avatarElement) {
+          this.avatarElement.removeChild(loadingSpinner)
+        }
+        MessageDialogs.showErrorMessage(myProfileConfiguration.messages.profilePictureInvalid)
+      }
+      reader.onload = event => {
+        const image = event.currentTarget.result // base64 data url
+        self.updateProfile({ picture: image }, function () {
+          window.location.search = 'profilePictureChangeSuccess'
+        }, function () {
+          if (loadingSpinner && self.avatarElement && loadingSpinner.parentElement === self.avatarElement) {
+            self.avatarElement.removeChild(loadingSpinner)
+          }
+        })
+      }
+      reader.readAsDataURL(input.files[0])
+    }
   }
 
   initSaveProfileSettings () {
