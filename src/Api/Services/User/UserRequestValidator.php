@@ -3,6 +3,7 @@
 namespace App\Api\Services\User;
 
 use App\Api\Services\Base\AbstractRequestValidator;
+use App\Api\Services\GeneralValidator;
 use App\Api\Services\ValidationWrapper;
 use App\DB\Entity\User\User;
 use App\User\UserManager;
@@ -151,20 +152,14 @@ final class UserRequestValidator extends AbstractRequestValidator
   {
     $KEY = 'picture';
     $image_size = 300;
-    if (1 === preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $picture_in, $matches)) {
-      // $image_type = $matches[1];
-      $image_binary = base64_decode($matches[2], true);
-      if (false === $image_binary) {
+
+    $result = GeneralValidator::validateImageDataUrl($picture_in, true);
+    if ($result instanceof Imagick) {
+      try {
+        $result->cropThumbnailImage($image_size, $image_size);
+        $picture_out = 'data:'.$result->getImageMimeType().';base64,'.base64_encode($result->getImageBlob());
+      } catch (ImagickException) {
         $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
-      } else {
-        try {
-          $imagick = new Imagick();
-          $imagick->readImageBlob($image_binary);
-          $imagick->cropThumbnailImage($image_size, $image_size);
-          $picture_out = 'data:'.$imagick->getImageMimeType().';base64,'.base64_encode($imagick->getImageBlob());
-        } catch (ImagickException) {
-          $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);
-        }
       }
     } else {
       $this->getValidationWrapper()->addError($this->__('api.registerUser.pictureInvalid', [], $locale), $KEY);

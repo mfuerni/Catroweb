@@ -3,10 +3,9 @@
 namespace App\Api\Services\Projects;
 
 use App\Api\Services\Base\AbstractRequestValidator;
+use App\Api\Services\GeneralValidator;
 use App\Api\Services\ValidationWrapper;
 use App\User\UserManager;
-use Imagick;
-use ImagickException;
 use OpenAPI\Server\Model\UpdateProjectRequest;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -27,8 +26,8 @@ final class ProjectsRequestValidator extends AbstractRequestValidator
   public function validateUserExists(string $user_id): bool
   {
     return '' !== trim($user_id)
-      && !ctype_space($user_id)
-      && null !== $this->user_manager->findOneBy(['id' => $user_id]);
+        && !ctype_space($user_id)
+        && null !== $this->user_manager->findOneBy(['id' => $user_id]);
   }
 
   public function validateUploadFile(string $checksum, UploadedFile $file, string $locale): ValidationWrapper
@@ -37,14 +36,14 @@ final class ProjectsRequestValidator extends AbstractRequestValidator
 
     if (!$file->isValid()) {
       return $this->getValidationWrapper()->addError(
-        $this->__('api.projectsPost.upload_error', [], $locale), $KEY
+          $this->__('api.projectsPost.upload_error', [], $locale), $KEY
       );
     }
 
     $calculated_checksum = md5_file($file->getPathname());
     if (strtolower((string) $calculated_checksum) != strtolower($checksum)) {
       return $this->getValidationWrapper()->addError(
-        $this->__('api.projectsPost.invalid_checksum', [], $locale), $KEY
+          $this->__('api.projectsPost.invalid_checksum', [], $locale), $KEY
       );
     }
 
@@ -104,21 +103,7 @@ final class ProjectsRequestValidator extends AbstractRequestValidator
   private function validateScreenshot(string $screenshot, string $locale): void
   {
     $KEY = 'screenshot';
-
-    if (1 === preg_match('/^data:image\/([^;]+);base64,([A-Za-z0-9\/+=]+)$/', $screenshot, $matches)) {
-      // $image_type = $matches[1];
-      $image_binary = base64_decode($matches[2], true);
-      if (false === $image_binary) {
-        $this->getValidationWrapper()->addError($this->__('api.project.screenshotInvalid', [], $locale), $KEY);
-      } else {
-        try {
-          $imagick = new Imagick();
-          $imagick->readImageBlob($image_binary);
-        } catch (ImagickException) {
-          $this->getValidationWrapper()->addError($this->__('api.project.screenshotInvalid', [], $locale), $KEY);
-        }
-      }
-    } else {
+    if (false === GeneralValidator::validateImageDataUrl($screenshot)) {
       $this->getValidationWrapper()->addError($this->__('api.project.screenshotInvalid', [], $locale), $KEY);
     }
   }

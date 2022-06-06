@@ -105,7 +105,7 @@ final class UserResponseManager extends AbstractResponseManager
     );
   }
 
-  public function addAuthenticationCookiesToHeader(string $token, string $refresh_token, array &$responseHeaders = null): void
+  public function addAuthenticationCookiesToHeader(string $token, string $refresh_token, array &$responseHeaders): void
   {
     $responseHeaders['Set-Cookie'] = [
       $this->cookie_service->createBearerTokenCookie($token),
