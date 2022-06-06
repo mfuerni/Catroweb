@@ -107,8 +107,7 @@ class ApiContext implements Context
 
   private array $default_user_structure_extended = ['id', 'username', 'email'];
 
-  private array $featured_program_structure = ['id', 'name', 'author', 'project_id', 'project_url', 'url',
-    'featured_image', ];
+  private array $default_featured_project_structure = ['project_id', 'name'];
 
   private array $default_media_file_structure = ['id', 'name'];
 
@@ -1508,7 +1507,7 @@ class ApiContext implements Context
 
     foreach ($returned_programs as $returned_program) {
       $stored_program = $this->findProgram($stored_programs, $returned_program['name']);
-      foreach ($this->featured_program_structure as $key) {
+      foreach ($this->default_featured_project_structure as $key) {
         Assert::assertNotEmpty($stored_program);
         Assert::assertEquals($returned_program[$key], $stored_program[$key]);
       }
@@ -1635,17 +1634,17 @@ class ApiContext implements Context
   }
 
   /**
-   * @Then /^the response should have the featured projects model structure$/
+   * @Then /^the response should have the default featured projects model structure$/
    */
-  public function responseShouldHaveFeaturedProjectsModelStructure(): void
+  public function responseShouldHaveDefaultFeaturedProjectsModelStructure(): void
   {
     $response = $this->getKernelBrowser()->getResponse();
     $returned_programs = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
     foreach ($returned_programs as $program) {
-      Assert::assertEquals(is_countable($program) ? count($program) : 0, count($this->featured_program_structure),
-        'Number of program fields should be '.count($this->featured_program_structure));
-      foreach ($this->featured_program_structure as $key) {
+      Assert::assertEquals(count($this->default_featured_project_structure), is_countable($program) ? count($program) : 0,
+        'Number of program fields should be '.count($this->default_featured_project_structure));
+      foreach ($this->default_featured_project_structure as $key) {
         Assert::assertArrayHasKey($key, $program, 'Program should contain '.$key);
         Assert::assertEquals($this->checkFeaturedProjectFieldsValue($program, $key), true);
       }
@@ -3116,7 +3115,7 @@ class ApiContext implements Context
       'file_type' => function ($file_type): void {
         Assert::assertIsString($file_type);
         Assert::assertTrue(in_array($file_type, ['project', 'image', 'sound', 'other'], true));
-      }
+      },
     ];
 
     Assert::assertArrayHasKey($key, $fields);
