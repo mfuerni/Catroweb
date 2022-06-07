@@ -21,12 +21,19 @@ Feature:
     Then I should see "My Profile"
 
   Scenario: changing my username must work
-    Given I click "#edit-username-button"
-    And I wait for AJAX to finish
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    Then I should see "User Settings"
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
+    Then I should see "Profile Settings"
+    And the element "#profile-username__input" should be visible
     When I fill in "username" with "Mr.Catro"
-    And I click "#save-username"
+    And I click "#profile_settings-save_action"
     And I wait for the page to be loaded
     Then I should be on "/app/user"
+    And I should see "Your profile has been successfully changed."
+    And the ".profile__basic-info__text__name" element should contain "Mr.Catro"
     When I go to "/app/logout"
     And I wait for the page to be loaded
     And I log in as "Catrobat"
@@ -35,214 +42,243 @@ Feature:
     Then I should be logged in
 
   Scenario: When changing the username the min length must be 3
-    Given I click "#edit-username-button"
-    And I wait for AJAX to finish
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
     When I fill in "username" with "Mr"
-    And I click "#save-username"
+    And I click "#profile_settings-save_action"
     And I wait for the page to be loaded
-    Then I should be on "/app/user"
-    And I should see "This username is not valid."
+    And I should see "Username too short"
     When I go to "/app/logout"
     And I wait for the page to be loaded
     And I log in as "Mr"
     Then I should see "Your password or username was incorrect."
 
   Scenario: When changing the username the max length must be 180
-    Given I click "#edit-username-button"
-    And I wait for AJAX to finish
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
     When I fill in "username" with "ThisUsernameConsistOf185CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180Chars!!!+++++"
-    And I click "#save-username"
+    And I click "#profile_settings-save_action"
+    And I wait for the page to be loaded
+    Then I should see "Username too long"
+
+  Scenario: changing email should work
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
+    When I fill in "email" with "first@email.com"
+    And I click "#profile_settings-save_action"
     And I wait for the page to be loaded
     Then I should be on "/app/user"
-    And I should see "ThisUsernameConsistOf185CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180Chars!!!"
-    And I should not see "ThisUsernameConsistOf185CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180CharsThisUsernameConsistOfMoreThan180Chars!!!+"
+    And I should see "Your profile has been successfully changed."
+    When I reload the page
+    And I wait for the page to be loaded
+    Then the "email" field should contain "first@email.com"
+
+  Scenario: changing email addresses with an invalid email should not work
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
+    When I fill in "email" with "first"
+    And I click "#profile_settings-save_action"
+    And I wait for AJAX to finish
+    Then I should see "Email invalid"
+    When I fill in "email" with "first@email"
+    And I click "#profile_settings-save_action"
+    And I wait for AJAX to finish
+    Then I should see "Email invalid"
+
+  Scenario: empty email not allowed
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
+    When I fill in "email" with ""
+    And I click "#profile_settings-save_action"
+    And I wait for AJAX to finish
+    Then I should see "fill out this field"
+
+  # TODO: currently working on
+
+  # TODO: about
 
   Scenario: changing password must work
-    Given I click "#edit-password-button"
-    And I wait for AJAX to finish
-    When I fill in "old-password" with "123456"
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#security-settings-modal']"
+    And I wait for the element "#security-settings-modal" to be visible
+    When I fill in "current-password" with "123456"
     And I fill in "password" with "abcdef"
     And I fill in "repeat-password" with "abcdef"
-    And I click "#save-password"
+    And I click "#security_settings-save_action"
     And I wait for the page to be loaded
     Then I should be on "/app/user"
+    And I should see "Your profile has been successfully changed."
     When I go to "/app/logout"
     And I wait for the page to be loaded
+    Then I should be logged out
     And I log in as "Catrobat"
     Then I should see "Your password or username was incorrect."
     When I log in as "Catrobat" with the password "abcdef"
     Then I should be logged in
 
   Scenario: changing password with a typo in repeat-password should not work
-    Given I click "#edit-password-button"
-    And I wait for AJAX to finish
-    When I fill in "old-password" with "123456"
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#security-settings-modal']"
+    And I wait for the element "#security-settings-modal" to be visible
+    When I fill in "current-password" with "123456"
     And I fill in "password" with "abcdef"
     And I fill in "repeat-password" with "fedcba"
-    And I click "#save-password"
+    And I click "#security_settings-save_action"
     And I wait for AJAX to finish
     Then I should see "The passwords didn't match."
 
   Scenario: a short password should not work
-    Given I click "#edit-password-button"
-    And I wait for AJAX to finish
-    When I fill in "old-password" with "123456"
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#security-settings-modal']"
+    And I wait for the element "#security-settings-modal" to be visible
+    When I fill in "current-password" with "123456"
     And I fill in "password" with "abc"
     And I fill in "repeat-password" with "abc"
-    And I click "#save-password"
+    And I click "#security_settings-save_action"
     And I wait for AJAX to finish
-    Then I should see "The new password must have at least 6 characters."
+    Then I should see "Password too short"
 
   Scenario: too long password should not work
-    Given I click "#edit-password-button"
-    And I wait for AJAX to finish
-    When I fill in "old-password" with "123456"
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#security-settings-modal']"
+    And I wait for the element "#security-settings-modal" to be visible
+    When I fill in "current-password" with "123456"
     And I fill in "password" with "ThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLong!!!!!"
     And I fill in "repeat-password" with "ThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLongThisPasswordIs5000CharsLong!!!!!"
-    And I click "#save-password"
+    And I click "#security_settings-save_action"
     And I wait for AJAX to finish
-    Then I should see "The new password can have a maximum of 4096 characters."
+    Then I should see "Password too long"
 
-  Scenario: changing email and additional email should work (shows pop up)
-    Given I click "#edit-email-button"
-    And I wait for AJAX to finish
-    When I fill in "email" with "first@email.com"
-    And I click "#save-email"
-    And I wait for the page to be loaded
-    Then I should be on "/app/user"
-    And I should see "Success"
-    And I should see "An email was sent to your email address"
-    When I click ".swal2-confirm"
-    And I wait for AJAX to finish
-    Then I should see "first@email.com"
-
-  Scenario: changing email addresses with an invalid email should not work
-    Given I click "#edit-email-button"
-    And I wait for AJAX to finish
-    When I fill in "email" with "first"
-    And I click "#save-email"
-    And I wait for AJAX to finish
-    Then I should see "This email address is not valid."
-    And I click "#save-email"
-    And I wait for AJAX to finish
-    Then I should see "This email address is not valid."
-    When I fill in "email" with "first@email"
-    And I click "#save-email"
-    And I wait for AJAX to finish
-    Then I should see "This email address is not valid."
-    When I fill in "email" with "first@email.comcomcom"
-    And I click "#save-email"
-    And I wait for AJAX to finish
-    Then I should see "This email address is not valid."
-
-  Scenario: deleting first mail without an additional email should not work
-    Given I click "#edit-email-button"
-    And I wait for AJAX to finish
-    When I fill in "email" with ""
-    And I click "#save-email"
-    And I wait for AJAX to finish
-    Then I should see "Error while updating this e-mail address. You must have at least one validated e-mail address."
-
-  Scenario: check deletion PopUp
-    Given I am on "/app/user"
-    And I wait for the page to be loaded
+  Scenario: check project deletion PopUp
     Then I should see "project 1"
     And I should see "project 2"
-    When I click "#delete-1"
-    And I wait for AJAX to finish
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then I should see "Delete project"
+    And the element "#project-action-menu" should be visible
+    When I click "#project-action-menu > ul > li:nth-child(2)"
     Then I should see "delete it"
     When I click ".swal2-cancel"
     Then I should not see "delete it"
-    And I wait for AJAX to finish
+    When I reload the page
     Then I should see "project 1"
     And I should see "project 2"
 
-
-  Scenario: It should be possible toggle the project privacy on myprofile
-    Given I am on "/app/user"
-    And I wait for the page to be loaded
+  Scenario: Delete a project
     Then I should see "project 1"
-    And the element "#visibility-lock-open-1" should be visible
-    And the element "#visibility-lock-1" should not be visible
-    When I click "#visibility-lock-open-1"
-    And I wait for AJAX to finish
-    And the element ".swal2-shown" should be visible
+    And I should see "project 2"
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then I should see "Delete project"
+    And the element "#project-action-menu" should be visible
+    When I click "#project-action-menu > ul > li:nth-child(2)"
+    Then I should see "delete it"
+    When I click ".swal2-confirm"
+    And I wait for the page to be loaded
+    Then I should not see "project 1"
+    But I should see "project 2"
+
+
+  Scenario: It should be possible toggle the project privacy on my profile
+    Then I should see "project 1"
+    And the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "public"
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then the element "#project-action-menu" should be visible
+    And I should see "Set private"
+    When I click "#project-action-menu > ul > li:nth-child(1)"
+    And I wait for the element ".swal2-shown" to be visible
     And I click ".swal2-confirm"
-    And I wait for AJAX to finish
-    And the element "#visibility-lock-open-1" should not be visible
-    And the element "#visibility-lock-1" should be visible
-    When I click "#visibility-lock-1"
-    And I wait for AJAX to finish
-    And the element ".swal2-shown" should be visible
+    And I wait for the element ".own-project-list__project[data-id='1'] .loading-spinner-backdrop" to be visible
+    And I wait for the element ".own-project-list__project[data-id='1'] .loading-spinner-backdrop" to be not visible
+    Then the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "private"
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then the element "#project-action-menu" should be visible
+    And I should see "Set public"
+    When I click "#project-action-menu > ul > li:nth-child(1)"
+    And I wait for the element ".swal2-shown" to be visible
     And I click ".swal2-confirm"
-    And I wait for AJAX to finish
-    And the element "#visibility-lock-open-1" should be visible
-    And the element "#visibility-lock-1" should not be visible
+    And I wait for the element ".own-project-list__project[data-id='1'] .loading-spinner-backdrop" to be visible
+    And I wait for the element ".own-project-list__project[data-id='1'] .loading-spinner-backdrop" to be not visible
+    Then the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "public"
 
   Scenario: Project visibility should not get updated if the user clicks on cancel
-    Given I am on "/app/user"
-    And I wait for the page to be loaded
     Then I should see "project 1"
-    And the element "#visibility-lock-open-1" should be visible
-    And the element "#visibility-lock-1" should not be visible
-    When I click "#visibility-lock-open-1"
+    And the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "public"
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then the element "#project-action-menu" should be visible
+    And I should see "Set private"
+    When I click "#project-action-menu > ul > li:nth-child(1)"
+    Then the element ".swal2-shown" should be visible
+    When I click ".swal2-cancel"
     And I wait for AJAX to finish
-    And the element ".swal2-shown" should be visible
-    And I click ".swal2-cancel"
-    And I wait for AJAX to finish
-    And the element "#visibility-lock-open-1" should be visible
-    And the element "#visibility-lock-1" should not be visible
+    Then the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "public"
 
-  Scenario: It should be possible toggle the project privacy on myprofile for more than 1 project
-    Given I am on "/app/user"
-    And I wait for the page to be loaded
+  Scenario: It should be possible toggle the project privacy on my profile for more than 1 project
     Then I should see "project 1"
+    And the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "public"
     And I should see "project 2"
-    And the element "#visibility-lock-open-1" should be visible
-    And the element "#visibility-lock-1" should not be visible
-    And the element "#visibility-lock-open-2" should not be visible
-    And the element "#visibility-lock-2" should be visible
-    When I click "#visibility-lock-open-1"
-    And I wait for AJAX to finish
-    And the element ".swal2-shown" should be visible
+    And the ".own-project-list__project[data-id='2'] .own-project-list__project__details__visibility__text" element should contain "private"
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then the element "#project-action-menu" should be visible
+    And I should see "Set private"
+    When I click "#project-action-menu > ul > li:nth-child(1)"
+    And I wait for the element ".swal2-shown" to be visible
     And I click ".swal2-confirm"
-    And I wait for AJAX to finish
-    And the element "#visibility-lock-open-1" should not be visible
-    And the element "#visibility-lock-1" should be visible
-    When I click "#visibility-lock-2"
-    And I wait for AJAX to finish
-    And the element ".swal2-shown" should be visible
+    And I wait for the element ".own-project-list__project[data-id='1'] .loading-spinner-backdrop" to be visible
+    And I wait for the element ".own-project-list__project[data-id='1'] .loading-spinner-backdrop" to be not visible
+    And the ".own-project-list__project[data-id='1'] .own-project-list__project__details__visibility__text" element should contain "private"
+    When I click ".own-project-list__project[data-id='2'] .own-project-list__project__action"
+    Then the element "#project-action-menu" should be visible
+    And I should see "Set public"
+    When I click "#project-action-menu > ul > li:nth-child(1)"
+    And I wait for the element ".swal2-shown" to be visible
     And I click ".swal2-confirm"
-    And I wait for AJAX to finish
-    And the element "#visibility-lock-open-2" should be visible
-    And the element "#visibility-lock-2" should not be visible
+    And I wait for the element ".own-project-list__project[data-id='2'] .loading-spinner-backdrop" to be visible
+    And I wait for the element ".own-project-list__project[data-id='2'] .loading-spinner-backdrop" to be not visible
+    Then the ".own-project-list__project[data-id='2'] .own-project-list__project__details__visibility__text" element should contain "public"
 
   Scenario: Programs with too high language version can also be set to visible
-    Given I am on "/app/user"
-    And I wait for the page to be loaded
-    And I should see "project 2"
-    And the element "#visibility-lock-2" should be visible
-    But the element "#visibility-lock-open-2" should not be visible
-    When I click "#visibility-lock-open-2"
-    And I wait for AJAX to finish
-    And the element ".swal2-shown" should be visible
+    Then I should see "project 2"
+    And the ".own-project-list__project[data-id='2'] .own-project-list__project__details__visibility__text" element should contain "private"
+    When I click ".own-project-list__project[data-id='1'] .own-project-list__project__action"
+    Then the element "#project-action-menu" should be visible
+    And I should see "Set public"
+    When I click "#project-action-menu > ul > li:nth-child(1)"
+    And I wait for the element ".swal2-shown" to be visible
     And I click ".swal2-confirm"
     And I wait for AJAX to finish
-    Then the element "#visibility-lock-2" should not be visible
-    But the element "#visibility-lock-open-2" should be visible
+    And I wait for the element ".own-project-list__project[data-id='2'] .loading-spinner-backdrop" to be visible
+    And I wait for the element ".own-project-list__project[data-id='2'] .loading-spinner-backdrop" to be not visible
+    Then the ".own-project-list__project[data-id='2'] .own-project-list__project__details__visibility__text" element should contain "public"
 
   Scenario: I should be able to delete my account
-    Given I am on "/app/user"
-    And I wait for the page to be loaded
-    Then the element "#delete-account-button" should not be visible
-    When I click "#account-settings-button"
-    Then the element "#delete-account-button" should be visible
-    When I click "#delete-account-button"
-    And I wait for AJAX to finish
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    Then I should see "User Settings"
+    And I click ".profile__user-settings .nav-link[data-bs-target='#account-settings-modal']"
+    And I wait for the element "#account-settings-modal" to be visible
+    Then I should see "Account Settings"
+    And I should see "You created 3 project(s) and have 0 follower(s). All of your projects will be removed."
+    And the element "#btn-delete-account" should be visible
+    When I click "#btn-delete-account"
+    And I wait for the element ".swal2-shown" to be visible
     Then I should see "Account Deletion"
     When I click ".swal2-confirm"
     And I wait for the page to be loaded
     Then I should be on "/app/"
+    And I should be logged out
 
   Scenario: I should be able to delete my account with comments and notifications
     Given I log in as "Catrobat" with the password "123456"
@@ -297,13 +333,14 @@ Feature:
     And comments or catro notifications should not exist
 
   Scenario: When changing the username it shouldn't contain an email address
-    Given I click "#edit-username-button"
-    And I wait for AJAX to finish
+    Given I click "#top-app-bar__btn-settings"
+    And I wait for the element "#user-settings-modal" to be visible
+    And I click ".profile__user-settings .nav-link[data-bs-target='#profile-settings-modal']"
+    And I wait for the element "#profile-settings-modal" to be visible
     When I fill in "username" with "catro catro@gmail.com"
-    And I click "#save-username"
-    And I wait for the page to be loaded
-    Then I should be on "/app/user"
-    And I should see "Username shouldn't contain an email address."
+    And I click "#profile_settings-save_action"
+    And I wait for the element ".swal2-shown" to be visible
+    Then I should see "Username must not contain an email address"
     When I go to "/app/logout"
     And I wait for the page to be loaded
     And I log in as "Mr"

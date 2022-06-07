@@ -478,6 +478,33 @@ class BrowserContext extends MinkContext implements Context
   }
 
   /**
+   * @Then I wait for the element :selector to be not visible
+   *
+   * @param mixed $locator
+   *
+   * @throws ResponseTextException
+   */
+  public function iWaitForTheElementToBeNotVisible($locator): void
+  {
+    /** @var NodeElement $element */
+    $element = $this->getSession()->getPage()->find('css', $locator);
+    if($element === null) {
+      return; // element does not exist, so not visible
+    }
+    $tries = 100;
+    $delay = 100000; // every 1/10 second
+    for ($timer = 0; $timer < $tries; ++$timer) {
+      if (!$element->isValid() || !$element->isVisible()) {
+        return;
+      }
+      usleep($delay);
+    }
+
+    $message = sprintf("The element '%s' was still visible after a %s micro seconds timeout", $locator, ($delay * $tries));
+    throw new ResponseTextException($message, $this->getSession());
+  }
+
+  /**
    * @Then I wait for the element :selector to contain :text
    *
    * @param mixed $locator
