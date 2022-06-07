@@ -145,15 +145,15 @@
 <script>
   const myProfileConfiguration = {
     projectInfo: {
-      visibilityPrivateText: '{{ "programs.private"|trans({}, "catroweb")}}',
-      visibilityPublicText: '{{ "programs.public"|trans({}, "catroweb")}}',
+      visibilityPrivateText: '{{ "programs.private"|trans({}, "catroweb")|escape('js')|raw }}',
+      visibilityPublicText: '{{ "programs.public"|trans({}, "catroweb")|escape('js')|raw }}',
     },
     projectActions: {
       delete: {
-        confirmationText: `{{ "programs.deleteConfirmation"|trans({}, "catroweb") }}`
+        confirmationText: `{{ "programs.deleteConfirmation"|trans({}, "catroweb")|escape('js')|raw }}`
       },
       visibility: {
-        confirmationText: `{{ "programs.changeVisibility"|trans({}, "catroweb") }}`,
+        confirmationText: `{{ "programs.changeVisibility"|trans({}, "catroweb")|escape('js')|raw }}`,
       }
     },
     securitySettings: {
@@ -161,28 +161,23 @@
     },
     userSettings: {
       deleteAccount: {
-        confirmationText: `{{ "programs.deleteAccountConfirmation"|trans({}, "catroweb") }}`
+        confirmationText: `{{ "programs.deleteAccountConfirmation"|trans({}, "catroweb")|escape('js')|raw }}`
       }
     },
     messages: {
-      unspecifiedErrorText: '{{ 'myprofile.unspecifiedError'|trans({}, 'catroweb')}}',
-      deleteProjectNotFoundText: '{{ 'programs.deleteNotFoundError'|trans({}, 'catroweb')}}',
+      unspecifiedErrorText: '{{ 'myprofile.unspecifiedError'|trans({}, 'catroweb')|escape('js')|raw }}',
+      deleteProjectNotFoundText: '{{ 'programs.deleteNotFoundError'|trans({}, 'catroweb')|escape('js')|raw }}',
       security: {
-        passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb') }}'
+        passwordsDontMatch: '{{ 'passwordsNoMatch'|trans({}, 'catroweb')|escape('js')|raw }}'
       },
-      profilePictureInvalid: '{{ 'api.registerUser.pictureInvalid'|trans({}, 'catroweb') }}',
-      passwordChangedSuccessText:  '{{ 'myprofile.passwordUpdated'|trans({}, 'catroweb') }}'
-    },
-    statusCodes: {
-      ok: '{{ constant('Symfony\\Component\\HttpFoundation\\Response::HTTP_OK') }}'
+      profilePictureInvalid: '{{ 'api.registerUser.pictureInvalid'|trans({}, 'catroweb')|escape('js')|raw }}',
+      passwordChangedSuccessText:  '{{ 'myprofile.passwordUpdated'|trans({}, 'catroweb')|escape('js')|raw }}'
     }
   }
-  if(typeof projectConfiguration === 'undefined') {
-    const projectConfiguration = { {# needed in OwnProjectList::_actionToggleVisibility #}
-      messages: {
-        forbidden: '{{ 'api.updateProject.forbidden'|trans({}, 'catroweb') }}',
-        notFound: '{{ 'api.updateProject.notFound'|trans({}, 'catroweb') }}',
-      }
+  const projectConfiguration = { {# needed in OwnProjectList::_actionToggleVisibility #}
+    messages: {
+      forbidden: '{{ 'api.updateProject.forbidden'|trans({}, 'catroweb') }}',
+      notFound: '{{ 'api.updateProject.notFound'|trans({}, 'catroweb') }}',
     }
   }
 </script>

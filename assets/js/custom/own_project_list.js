@@ -45,7 +45,7 @@ export class OwnProjectList {
       if (event.detail.index === 0) { // Set public/private
         self._actionToggleVisibility(self.projectActionMenu.projectId)
       } else if (event.detail.index === 1) { // Delete
-        self._actionDeleteProgram(self.projectActionMenu.projectId)
+        self._actionDeleteProject(self.projectActionMenu.projectId)
       } else {
         console.error('Invalid menu item selected')
       }
@@ -220,7 +220,7 @@ export class OwnProjectList {
     return proj
   }
 
-  _actionDeleteProgram (id) {
+  _actionDeleteProject (id) {
     const projectName = this.projectsData[id].name
     const msgParts = this.actionConfiguration.delete.confirmationText
       .replace('%programName%', '“' + projectName + '”').split('\n')

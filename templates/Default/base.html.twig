@@ -20,11 +20,11 @@
 
   <script>const globalConfiguration = {
       messages: {
-        errorTitle: '{{ 'error'|trans({}, 'catroweb') }}',
-        successTitle: '{{ 'success.text'|trans({}, 'catroweb') }}',
-        okayButtonText: '{{ 'ok'|trans({}, 'catroweb') }}',
-        authenticationErrorText: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim }}',
-        unspecifiedErrorText: '{{ 'errors.unspecified'|trans({}, 'catroweb') }}',
+        errorTitle: '{{ 'error'|trans({}, 'catroweb')|escape('js')|raw }}',
+        successTitle: '{{ 'success.text'|trans({}, 'catroweb')|escape('js')|raw }}',
+        okayButtonText: '{{ 'ok'|trans({}, 'catroweb')|escape('js')|raw }}',
+        authenticationErrorText: '{{ 'errors.authentication.webview'|trans({}, 'catroweb')|replace({'\r': '', '\n': ' '})|trim|escape('js')|raw }}',
+        unspecifiedErrorText: '{{ 'errors.unspecified'|trans({}, 'catroweb')|escape('js')|raw }}',
       },
       environment: '{{ app.environment }}',
     }</script>
