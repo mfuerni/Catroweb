@@ -1451,7 +1451,7 @@ class DataFixturesContext implements Context
     }
     $table_rows = $table->getHash();
 
-    Assert::assertEquals(count($project_machine_translations), count($table_rows), 'table has different number of rows');
+    Assert::assertEquals(count($table_rows), count($project_machine_translations), 'table has different number of rows');
 
     foreach ($project_machine_translations as $translation) {
       /** @var Program $project */

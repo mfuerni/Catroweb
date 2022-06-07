@@ -1,3 +1,4 @@
+# TODO: Report project feature currently disabled
 @admin
 Feature: Admin reported programs
   It should be possible to list all reported programs, unreport them and edit their visible status

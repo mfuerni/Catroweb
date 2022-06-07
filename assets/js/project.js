@@ -1,3 +1,4 @@
+/* global globalConfiguration */
 /* global projectConfiguration */
 
 import { MDCTextField } from '@material/textfield'
@@ -160,10 +161,7 @@ ProgramCredits(
 initProjectScreenshotUpload()
 
 function initProjectScreenshotUpload () {
-  document.getElementById('change-project-thumbnail-button').addEventListener('click', function () {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = 'image/*'
+  const addChangeListenerToFileInput = function (input) {
     input.onchange = () => {
       document.getElementById('upload-image-spinner').classList.remove('d-none')
 
@@ -191,8 +189,27 @@ function initProjectScreenshotUpload () {
       }
       reader.readAsDataURL(input.files[0])
     }
-    input.click()
-  })
+  }
+  const changeButton = document.getElementById('change-project-thumbnail-button')
+  if (changeButton) { // otherwise user is not allowed to change screenshot (e.g., not owner of project)
+    changeButton.addEventListener('click', function () {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*'
+      addChangeListenerToFileInput(input)
+      input.click()
+    })
+
+    if (globalConfiguration.environment === 'test') {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*'
+      addChangeListenerToFileInput(input)
+      input.name = 'project-screenshot-upload-field'
+      input.className = 'd-none'
+      changeButton.parentElement.appendChild(input)
+    }
+  }
 }
 
 initProjects()

@@ -1,3 +1,4 @@
+# TODO: Report project feature currently disabled
 @web @project_page
 Feature: As a project owner, I should be able to give credits for my project.
 
