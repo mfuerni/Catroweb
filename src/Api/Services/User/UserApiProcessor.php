@@ -64,10 +64,10 @@ final class UserApiProcessor extends AbstractApiProcessor
       // Resize happens in UserRequestValidator::validateAndResizePicture
       $user->setAvatar($request->getPicture());
     }
-    if (!empty($request->getAbout())) {
+    if (!is_null($request->getAbout())) {
       $user->setAbout($request->getAbout());
     }
-    if (!empty($request->getCurrentlyWorkingOn())) {
+    if (!is_null($request->getCurrentlyWorkingOn())) {
       $user->setCurrentlyWorkingOn($request->getCurrentlyWorkingOn());
     }
 
