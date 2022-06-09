@@ -64,7 +64,7 @@ Feature: There should be all projects of a user presented on a profile page
     Given I log in as "User1"
     And I am on "/app/user"
     And I wait for the page to be loaded
-    When I click ".program"
+    When I click ".own-project-list__project"
     And I wait for AJAX to finish
     Then I am on "/app/project/28"
 
