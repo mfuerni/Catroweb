@@ -11438,16 +11438,16 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v6.1.3",
+            "version": "v6.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "ef9108b3a88045b7546e808fb404ddb073dd35ea"
+                "reference": "95effeb9d6e2cec861cee06bf5bbf82d09aea7f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/ef9108b3a88045b7546e808fb404ddb073dd35ea",
-                "reference": "ef9108b3a88045b7546e808fb404ddb073dd35ea",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/95effeb9d6e2cec861cee06bf5bbf82d09aea7f5",
+                "reference": "95effeb9d6e2cec861cee06bf5bbf82d09aea7f5",
                 "shasum": ""
             },
             "require": {
@@ -11506,7 +11506,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v6.1.3"
+                "source": "https://github.com/symfony/routing/tree/v6.1.7"
             },
             "funding": [
                 {
@@ -11522,7 +11522,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-20T15:00:40+00:00"
+            "time": "2022-10-18T13:12:43+00:00"
         },
         {
             "name": "symfony/security-acl",
